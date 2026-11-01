@@ -44,3 +44,10 @@
 - 기존 24개와 원격 develop 데이터가 동일함을 확인. 전체 36개 스키마·중복 검사 통과, 각 제품군 9개.
 - 실제 카탈로그를 사용하는 TestClient로 목록 조회와 전체 36개 intake를 확인. 사양 값·공식 URL·확인일 보존 및 미확인 항목의 needs_check 표시 통과.
 - 백엔드 pytest 74개, 프론트 요약 테스트 7개 통과. 프론트 lint·TypeScript·빌드 통과.
+
+## 후속 사양 보완
+
+- DV90F22CDT: https://www.samsung.com/sec/support/model/DV90F22CDT/
+- DV80H22DDW: https://www.samsung.com/sec/support/model/DV80H22DDW/
+- 2026-11-01 공식 지원 스펙 표로 두 모델의 크기(686 × 984 × 872 mm)·무게(78 kg)·건조 방식(인버터 히트펌프 + 히터)·내장 물통(7ℓ)·마이크로 안심필터·필터 알람을 보완했다. 오토 오픈 도어는 CDT 있음, DDW 없음으로 구분했다. 원래 판매 출처 URL은 유지한다.
+- 식기세척기 및 로보락의 미확인 치수는 모델별 공식 표를 확보하지 못해 그대로 남긴다.
