@@ -2,7 +2,7 @@
 $ErrorActionPreference = 'Stop'
 $root = Split-Path $PSScriptRoot -Parent
 
-Start-Process powershell -WorkingDirectory "$root/backend" -ArgumentList '-NoExit', '-Command',
+Start-Process powershell -WindowStyle Hidden -WorkingDirectory "$root/backend" -ArgumentList '-NoExit', '-Command',
     'uv run uvicorn app.main:app --reload --port 8000 --env-file .env'
 Set-Location "$root/frontend"
 npm run dev

@@ -13,7 +13,8 @@ _hits: dict[str, deque[float]] = defaultdict(deque)
 
 
 def limit(request: Request) -> None:
-    # shortcut: 서버 메모리·직접 접속 IP 기준. 프록시 뒤에 배포하면 X-Forwarded-For(신뢰 프록시만)와 공용 저장소로 바꾼다.
+    # app.serve의 Uvicorn이 신뢰 프록시의 전달 헤더만 request.client에 반영한다.
+    # 단일 프로세스 메모리 기준. 다중 서버 전환 시 공용 저장소가 필요하다.
     per_min = int(os.getenv("RATE_LIMIT_PER_MIN", "12"))
     key = f"{request.url.path}:{request.client.host if request.client else '-'}"
     now = time.monotonic()
