@@ -106,7 +106,7 @@ export default function ProductCheck({ product, busy, errors, message, onBack, o
                 <tr key={s.key}>
                   <th scope="row">{s.label}</th>
                   <td>{s.status === 'needs_check' ? <span className="muted">{s.value || '확인 필요'}</span> : s.value}</td>
-                  <td><span className="tag outline small">{s.status === 'needs_check' ? (s.value ? 'AI가 찾음 · 확인 필요' : '확인 필요') : sourceTag(s.source_id) === '제조사 공식' ? '제조사 확인' : sourceTag(s.source_id)}</span></td>
+                  <td><span className="tag outline small">{s.status === 'needs_check' ? (product.sources.some((source) => source.id === s.source_id && source.kind === 'ai') ? 'AI가 찾음 · 확인 필요' : '확인 필요') : sourceTag(s.source_id) === '제조사 공식' ? '제조사 확인' : sourceTag(s.source_id)}</span></td>
                 </tr>
               ))}
             </tbody>
