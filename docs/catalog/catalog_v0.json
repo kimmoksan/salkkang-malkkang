@@ -535,5 +535,215 @@
       "청정필터 교체 알림": "O"
     },
     "checked_at": "2026-10-30"
+  },
+  {
+    "model": "DW99F79E1UHCS",
+    "brand": "삼성전자",
+    "category": "dishwasher",
+    "name": "Infinite AI 식기세척기 빌트인 14인용 (필터 내장형, 컵 맞춤 세척)",
+    "url": "https://www.samsung.com/sec/dishwashers/built-in-dw99f79e1uhcs-d2c/DW99F79E1UHCS/",
+    "status": "판매중",
+    "p": {
+      "용량": "14 인용",
+      "설치 방식": "빌트인",
+      "정수필터": "내장형",
+      "컵 맞춤 세척": "있음",
+      "제품 크기": "미확인"
+    },
+    "checked_at": "2026-11-01"
+  },
+  {
+    "model": "DW90F79F1USWS",
+    "brand": "삼성전자",
+    "category": "dishwasher",
+    "name": "Bespoke AI 식기세척기 빌트인 14인용 (필터 내장형, 컵 맞춤 세척)",
+    "url": "https://www.samsung.com/sec/dishwashers/built-in-dw90f79f1usws-d2c/DW90F79F1USWS/",
+    "status": "판매중",
+    "p": {
+      "용량": "14 인용",
+      "설치 방식": "빌트인",
+      "정수필터": "내장형",
+      "컵 맞춤 세척": "있음",
+      "제품 크기": "미확인"
+    },
+    "checked_at": "2026-11-01"
+  },
+  {
+    "model": "DW80F75K1U39FF",
+    "brand": "삼성전자",
+    "category": "dishwasher",
+    "name": "Bespoke AI 식기세척기 빌트인 14인용 (필터 내장형)+정수필터 내장형 교체용 1개",
+    "url": "https://www.samsung.com/sec/dishwashers/package-dw80f75k1u39ff-d2c/DW80F75K1U39FF/",
+    "status": "판매중",
+    "p": {
+      "용량": "14 인용",
+      "설치 방식": "빌트인",
+      "정수필터": "내장형",
+      "판매 구성": "식기세척기 + 정수필터 내장형 교체용 1개",
+      "제품 크기": "미확인"
+    },
+    "checked_at": "2026-11-01"
+  },
+  {
+    "model": "DV90F22CDT",
+    "brand": "삼성전자",
+    "category": "dryer",
+    "name": "Bespoke AI 건조기 22kg (177.8mm LCD)",
+    "url": "https://www.samsung.com/sec/dryers/dryer-dv90f22cdt-d2c/DV90F22CDT/",
+    "status": "판매중",
+    "p": {
+      "건조 용량": "22 kg",
+      "디스플레이": "177.8mm LCD",
+      "제품 크기": "미확인"
+    },
+    "checked_at": "2026-11-01"
+  },
+  {
+    "model": "DV80H22DDW",
+    "brand": "삼성전자",
+    "category": "dryer",
+    "name": "Bespoke AI 건조기 22kg (71.1mm LCD+다이얼)",
+    "url": "https://www.samsung.com/sec/dryers/dryer-dv80h22ddw-d2c/DV80H22DDW/",
+    "status": "판매중",
+    "p": {
+      "건조 용량": "22 kg",
+      "디스플레이": "71.1mm LCD+다이얼",
+      "제품 크기": "미확인"
+    },
+    "checked_at": "2026-11-01"
+  },
+  {
+    "model": "S10 MaxV Ultra Steam",
+    "brand": "로보락",
+    "category": "robot_vacuum",
+    "name": "S10 MaxV Ultra Steam 로봇청소기",
+    "url": "https://kr.roborock.com/products/로보락-s10-maxv-steam-로봇청소기",
+    "status": "판매중",
+    "p": {
+      "물걸레 세척": "100°C 고온수",
+      "스팀 살균": "있음",
+      "더스트백 열풍 건조": "있음",
+      "자동 급배수": "미확인",
+      "판매 구성": "일반형(직배수형 별도 판매)",
+      "제품 크기": "미확인"
+    },
+    "checked_at": "2026-11-01"
+  },
+  {
+    "model": "S10 MaxV Ultra Steam 직배수",
+    "brand": "로보락",
+    "category": "robot_vacuum",
+    "name": "S10 MaxV Ultra Steam 직배수 로봇청소기",
+    "url": "https://kr.roborock.com/products/로보락-s10-maxv-ultra-steam",
+    "status": "판매중",
+    "p": {
+      "물걸레 세척": "100°C 고온수",
+      "스팀 살균": "있음",
+      "더스트백 열풍 건조": "있음",
+      "자동 급배수": "직배수형(설치 조건 확인 필요)",
+      "제품 크기": "미확인"
+    },
+    "checked_at": "2026-11-01"
+  },
+  {
+    "model": "Saros Z70",
+    "brand": "로보락",
+    "category": "robot_vacuum",
+    "name": "Saros Z70 로봇청소기",
+    "url": "https://kr.roborock.com/products/로보락-saros-z70-로봇청소기",
+    "status": "판매중",
+    "p": {
+      "흡입력": "22,000 Pa (제조사 표기 최대값)",
+      "로봇팔": "OmniGrip",
+      "문턱 리프팅": "있음",
+      "제품 크기": "미확인"
+    },
+    "checked_at": "2026-11-01"
+  },
+  {
+    "model": "AP-1726J",
+    "brand": "코웨이",
+    "category": "air_purifier",
+    "name": "노블 공기청정기 플러스 (57㎡)",
+    "url": "https://www.coway.com/product/detail?prdno=1568",
+    "status": "판매중",
+    "p": {
+      "크기(가로 x 세로 x 높이)": "320 x 320 x 800 mm",
+      "무게": "15.7kg",
+      "권장사용면적": "57㎡",
+      "필터구성(교체주기)": "①4D 프리필터 ②에어매칭필터(4/6개월) ③4D 입체 필터(12개월)",
+      "관리주기": "1회/4개월 1회/6개월",
+      "에너지 효율": "에너지소비효율 2등급",
+      "살균시스템": "팬 UV-C 케어",
+      "소비전력": "40W",
+      "안전인증 / 전자파인증 번호": "ZK07002-21001 / R-R-CWY-AP-1321B",
+      "제품명칭": "공기청정기",
+      "제조국가": "한국"
+    },
+    "checked_at": "2026-11-01"
+  },
+  {
+    "model": "AP-2126I",
+    "brand": "코웨이",
+    "category": "air_purifier",
+    "name": "노블 공기청정기 플러스 (70㎡)",
+    "url": "https://www.coway.com/product/detail?prdno=1567",
+    "status": "판매중",
+    "p": {
+      "크기(가로 x 세로 x 높이)": "320 x 320 x 800 mm",
+      "무게": "15.7kg",
+      "권장사용면적": "70㎡",
+      "필터구성(교체주기)": "①4D 프리필터 ②에어매칭필터0(4/6개월) ③4D 입체 필터(12개월)",
+      "관리주기": "1회/4개월 1회/6개월",
+      "에너지 효율": "에너지소비효율 3등급",
+      "살균시스템": "팬 UV-C 케어",
+      "소비전력": "62W",
+      "안전인증 / 전자파인증 번호": "ZK07002-21002 / R-R-CWY-AP-1821A",
+      "제품명칭": "공기청정기",
+      "제조국가": "한국"
+    },
+    "checked_at": "2026-11-01"
+  },
+  {
+    "model": "AP-2026B",
+    "brand": "코웨이",
+    "category": "air_purifier",
+    "name": "스퀘어핏 공기청정기 (66㎡)",
+    "url": "https://www.coway.com/product/detail?prdno=1438",
+    "status": "판매중",
+    "p": {
+      "크기(가로 x 세로 x 높이)": "366 x 183 x 700 ㎜",
+      "무게": "9 kg",
+      "권장사용면적": "66 ㎡",
+      "필터구성(교체주기)": "①프리필터 ②에어매칭필터(2개월/4개월) ③폴더블 올인원필터(12개월)",
+      "관리주기": "1회/2개월, 1회/4개월",
+      "에너지 효율": "에너지소비효율 3등급",
+      "소비전력": "73 W",
+      "안전인증 / 전자파인증 번호": "XE070061-26004/R-R-CWY-AP-2026B",
+      "제품명칭": "공기청정기",
+      "제조국가": "한국"
+    },
+    "checked_at": "2026-11-01"
+  },
+  {
+    "model": "RD25AS",
+    "brand": "LG전자",
+    "category": "dryer",
+    "name": "트롬 AI 오브제컬렉션 건조기 25kg",
+    "url": "https://www.lge.co.kr/product/dryers/rd25as",
+    "status": "판매중",
+    "p": {
+      "건조 용량 (kg)": "25",
+      "크기 (WxHxD, mm)": "700 x 990 x 824",
+      "도어 열림 시 크기 (WxHxD, mm)": "700 x 990 x 1,380",
+      "무게 (kg)": "76.2",
+      "건조방식": "듀얼 인버터 히트펌프",
+      "콘덴서 자동세척 시스템": "O",
+      "트루스팀": "O",
+      "소비전력(W)": "1,400",
+      "에너지 소비효율등급": "1등급",
+      "동일모델의 출시년월": "2025-09"
+    },
+    "checked_at": "2026-11-01"
   }
 ]
