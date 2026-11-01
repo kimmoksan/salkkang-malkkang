@@ -1,4 +1,5 @@
 import os
+from pathlib import Path
 
 from fastapi import Depends, FastAPI, HTTPException
 
@@ -57,3 +58,9 @@ def hearing(req: HearingRequest) -> Hearing:
         return mock_hearing(req)
     except HearingError as e:
         raise HTTPException(status_code=422, detail=str(e))
+
+
+if os.getenv("SERVE_FRONTEND") == "1":
+    from app.frontend import mount_frontend
+
+    mount_frontend(app, Path(__file__).resolve().parents[2] / "frontend" / "dist")
