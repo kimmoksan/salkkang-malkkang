@@ -53,7 +53,6 @@ export default function Intro({ input, onChange, onSubmit, onExample, busy, erro
     if (!manual && (!input.catalog_model || !products.some((p) => p.model === input.catalog_model))) {
       next.catalog_model = '브랜드와 제품 모델을 선택해 주세요.'
     }
-    if (!input.reason.trim()) next.reason = '구매 이유를 한 줄로 입력해 주세요.'
     setLocal(next)
     if (Object.keys(next).length === 0) onSubmit()
   }
@@ -125,7 +124,7 @@ export default function Intro({ input, onChange, onSubmit, onExample, busy, erro
           change({ ...input, catalog_model: undefined })
         }}>{manual ? '카탈로그에서 고르기' : '목록에 없어요 · 직접 입력하기'}</button>
 
-        <label htmlFor="reason">구매 이유</label>
+        <label htmlFor="reason">구매 이유 <span className="muted small">(선택 · 없으면 비워 둬도 돼요)</span></label>
         <input
           id="reason"
           maxLength={200}

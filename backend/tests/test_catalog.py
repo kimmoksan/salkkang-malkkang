@@ -46,7 +46,7 @@ def test_catalog_specs_keep_keys_values_and_official_provenance():
 
 
 @pytest.mark.parametrize("over", [
-    {"catalog_model": "missing"}, {"category": "dryer"}, {"reason": " "}, {"reason": ""},
+    {"catalog_model": "missing"}, {"category": "dryer"},
 ])
 def test_invalid_catalog_input_rejected(over):
     assert client.post("/api/intake", json={**BASE, **over}).status_code == 422
@@ -89,3 +89,7 @@ def test_same_name_models_get_distinguishing_variant():
     c = CatalogEntry(model="C1", p={"건조 용량 (kg)": "9"}, **{**base, "name": "다른 이름"})
     out = {x.model: x.variant for x in with_variants([a, b, c])}
     assert out == {"A20": "건조 용량 20kg", "B18": "건조 용량 18kg", "C1": None}  # 이름이 겹칠 때만, 같은 값(색상)은 제외
+
+
+def test_catalog_pick_without_reason_is_accepted():
+    assert client.post("/api/intake", json={"category": "robot_vacuum", "catalog_model": "TEST-R1", "reason": " "}).status_code == 200

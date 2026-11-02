@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { ApiError, fetchHearing } from '../api'
 import Kkang from '../components/Kkang'
 import type { EvidenceKind, Hearing, Product } from '../types'
@@ -12,6 +12,7 @@ type Props = {
   base?: Hearing
   onLoaded: (hearing: Hearing) => void
   onFocus: (claimId: string) => void
+  others?: string[]
 }
 
 const KIND_LABEL: Record<EvidenceKind, string> = {
@@ -27,10 +28,13 @@ const SIDE = {
 }
 const STATUS = { revised: '주장 수정', withdrawn: '주장 철회' }
 
-export default function HearingPanel({ product, sceneId, answer, onAnswer, cached, base, onLoaded, onFocus }: Props) {
+export default function HearingPanel({ product, sceneId, answer, onAnswer, cached, base, onLoaded, onFocus, others = [] }: Props) {
   const [response, setResponse] = useState<{ answer: string | null; hearing?: Hearing; error?: string } | null>(null)
   const [retry, setRetry] = useState(0)
 
+  // 다른 장면 발언은 요청할 때 읽기만 한다(바뀔 때마다 공방을 다시 부르지 않게 ref로 둔다).
+  const othersRef = useRef(others)
+  useEffect(() => { othersRef.current = others })
   useEffect(() => {
     if (cached && cached.answered === answer) return
     let alive = true
@@ -43,6 +47,7 @@ export default function HearingPanel({ product, sceneId, answer, onAnswer, cache
       answer,
       facts: product.sources.slice(0, 5).map((s) => ({ source_id: s.id, text: s.text.slice(0, 3000), verified: s.kind !== 'ai' })),
       previous: answer ? base ?? cached ?? null : null,
+      others: othersRef.current,
     })
       .then((h) => {
         if (!alive) return

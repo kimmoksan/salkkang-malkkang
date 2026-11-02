@@ -25,8 +25,12 @@ def test_rejects_unsupported_category():
     assert post(category="tv").status_code == 422
 
 
+def test_reason_is_optional_but_product_is_not():
+    assert post(reason="   ").status_code == 200  # 구매 이유는 비워도 진행
+    assert post(reason="   ").json()["reason"] == ""
+
+
 def test_rejects_blank_and_too_long():
-    assert post(reason="   ").status_code == 422
     assert post(product_text="").status_code == 422
     assert post(reason="가" * 201).status_code == 422
     assert post(product_text="가" * 5001).status_code == 422

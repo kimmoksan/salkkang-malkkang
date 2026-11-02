@@ -3,7 +3,7 @@ from pathlib import Path
 
 from fastapi import Depends, FastAPI, HTTPException, Request
 
-from app.gemini import GeminiError, generate_json
+from app.gemini import GeminiError, calls_left, generate_json
 from app.hearing import MOCK_ANSWERS, Hearing, HearingError, HearingRequest, check_scene, live_hearing, mock_hearing
 from app.intake import EXAMPLE, Category, IntakeRequest, Product, build_product
 from app.catalog import CatalogSummary, load_catalog, with_variants
@@ -20,8 +20,9 @@ def current_mode() -> str:
 
 
 @app.get("/api/health")
-def health() -> dict[str, str]:
-    return {"status": "ok", "mode": current_mode()}
+def health() -> dict[str, str | int]:
+    mode = current_mode()
+    return {"status": "ok", "mode": mode, **({"ai_calls_left": calls_left()} if mode == "live" else {})}
 
 
 @app.post("/api/intake", dependencies=[Depends(limit)])
