@@ -68,6 +68,7 @@ export type HearingRequest = {
   answer: string | null
   facts?: { source_id: string; text: string; verified?: boolean }[]
   previous?: Hearing | null
+  others?: string[]
 }
 
 export type DecisionDraft = { choice: 'buy' | 'hold' | 'decline' | null; reason: string }

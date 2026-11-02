@@ -131,3 +131,12 @@ def test_skip_returns_previous_without_calling_ai():
     prev = live_hearing(HearingRequest(**REQ), lambda p: GOOD)
     h = live_hearing(HearingRequest(**REQ, answer="skip", previous=prev), lambda p: pytest.fail("건너뛰기에 AI 호출"))
     assert h.answered == "skip" and h.claims == prev.claims and h.mode == "live"
+
+
+def test_prompt_lists_other_scene_claims_and_keeps_first_round_unrevised():
+    seen = {}
+    live_hearing(HearingRequest(**REQ, others=["pro: 고양이 털도 매일 청소돼요"]), lambda p: seen.setdefault("p", p) and GOOD)
+    assert "<다른장면발언>" in seen["p"] and "고양이 털도 매일 청소돼요" in seen["p"]
+    assert "되풀이하지 않는다" in seen["p"] and "첫 공방에서는 모든 발언을 kept" in seen["p"]
+    with pytest.raises(ValueError):
+        HearingRequest(**REQ, others=["x" * 301])

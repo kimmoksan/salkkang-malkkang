@@ -61,7 +61,8 @@ export default function Scenes({ product, onBack, onFinish, hearings, bases, ans
       </div>
       <section className="conversation card" aria-label="청문회 대화">
         <div className="conversation-heading"><h2>같이 따져보자</h2><span className="muted small">이 장면의 이야기</span></div>
-        <HearingPanel key={scene.id} product={product} sceneId={scene.id} answer={answer} cached={hearings[scene.id]} base={bases[scene.id]} onLoaded={onHearing} onAnswer={(a) => onAnswer(scene.id, a)} onFocus={(claim) => setSelected({ scene: scene.id, claim })} />
+        <HearingPanel key={scene.id} product={product} sceneId={scene.id} answer={answer} cached={hearings[scene.id]} base={bases[scene.id]} onLoaded={onHearing} onAnswer={(a) => onAnswer(scene.id, a)} onFocus={(claim) => setSelected({ scene: scene.id, claim })}
+          others={Object.values(hearings).filter((h) => h.scene_id !== scene.id && h.mode === 'live').flatMap((h) => h.claims.map((c) => `${c.side}: ${c.text}`)).slice(0, 12)} />
         <div className="story-next">
           <div className="guide-line"><Kkang pose="guide_present" size="sm" /><p><strong>판깡이</strong><br />{story.bridge}</p></div>
           <button type="button" className="primary" onClick={index < scenes.length - 1 ? () => onIndexChange(index + 1) : onFinish}>{story.next} →</button>
