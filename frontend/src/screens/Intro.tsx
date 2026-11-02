@@ -57,12 +57,34 @@ export default function Intro({ input, onChange, onSubmit, onExample, busy, erro
     if (Object.keys(next).length === 0) onSubmit()
   }
 
+  function start() {
+    const form = document.getElementById('intake')
+    form?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    form?.querySelector<HTMLInputElement>('input[name="category"]:checked')?.focus({ preventScroll: true })
+  }
+
   return (
-    <section className="intro">
+    <>
+    <section className="hero">
+      <div className="hero-copy">
+        <p className="eyebrow">가전 살까 말까, 고민될 때</p>
+        <h1><span className="hero-shout">잠깡!</span><br />사기 전에,<br />우리 얘기 좀 해볼까?</h1>
+        <p className="hero-lead">살깡이의 기대도, 말깡이의 걱정도.<br />함께 듣고, 결정은 네가 해.</p>
+        <button type="button" className="primary hero-cta" onClick={start}>제품 고르고 시작하기 →</button>
+        <p className="muted small hero-cats">{CATEGORIES.map((c) => c.label).join('  ·  ')}</p>
+      </div>
+      <div className="hero-art">
+        <img src="/assets/hero.webp" width={1402} height={1122}
+          alt="거실 러그 위 로봇청소기를 두고 살깡이는 신나 하고, 판깡이는 메모를 들고, 말깡이는 돋보기로 살펴보는 그림" />
+        <p className="hero-bubble pro" aria-hidden="true">이건 편하겠다!</p>
+        <p className="hero-bubble con" aria-hidden="true">잠깡, 이것도 보자!</p>
+      </div>
+      <p className="hero-tagline"><span aria-hidden="true">✦</span> 좋은 점과 불편한 점을 함께 살펴보는 가전 청문회 <span aria-hidden="true">✦</span></p>
+    </section>
+    <section className="intro" id="intake">
       <form className="intro-form" onSubmit={handleSubmit} noValidate>
-        <p className="eyebrow">구매 전, 한 번 더.</p>
-        <h1>내 생활에 맞는지,<br />먼저 살펴보세요.</h1>
-        <p className="muted">살까 말까 고민될 때, 살깡이와 말깡이가 대신 다퉈 드려요</p>
+        <h2>어떤 제품이 고민이야?</h2>
+        <p className="muted">제품만 고르면 살깡이와 말깡이가 공방을 시작해요</p>
         <div className="kkang-trio" aria-hidden="true">
           <Kkang pose="pro_wave" delay={0} />
           <Kkang pose="guide_greet" delay={0.6} />
@@ -161,5 +183,6 @@ export default function Intro({ input, onChange, onSubmit, onExample, busy, erro
         ))}
       </ol>
     </section>
+    </>
   )
 }
