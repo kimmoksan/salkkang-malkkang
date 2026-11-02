@@ -1,5 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import type { Layer, Scene } from '../scenes'
+import SceneCast, { type CastState } from './SceneCast'
+import { SCENE_STORY } from '../story'
 
 const W = 320
 const H = 180
@@ -56,14 +58,15 @@ function LayerView({ layer, paused }: { layer: Layer; paused: boolean }) {
   )
 }
 
-export default function Stage({ scene, paused }: { scene: Scene; paused: boolean }) {
+export default function Stage({ scene, paused, cast }: { scene: Scene; paused: boolean; cast?: CastState }) {
   return (
-    <div className={`stage ${paused ? 'paused' : ''}`} role="img" aria-label={`${scene.title}: ${scene.caption}`}>
+    <div className={`stage ${paused ? 'paused' : ''}`} role="img" aria-label={`${scene.title}: ${scene.caption}${cast ? ' ' + SCENE_STORY[scene.id].action : ''}`}>
       <Asset key={scene.background} id={scene.background} className="bg" />
       {scene.layers.map((l, i) => (
         <LayerView key={`${scene.id}-${i}`} layer={l} paused={paused} />
       ))}
       {scene.tone && <div className={`tone-${scene.tone}`} />}
+      {cast && <SceneCast sceneId={scene.id} state={cast} />}
     </div>
   )
 }

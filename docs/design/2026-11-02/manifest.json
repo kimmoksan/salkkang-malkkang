@@ -1,0 +1,80 @@
+[
+  {
+    "file": "generated/01-before-logo-options.png",
+    "original": "exec-8cbcdaae-3175-4fcf-b491-d160f79734ff.png",
+    "description": "초기 BEFORE 로고 비교안",
+    "sha256": "6d262647ae343a0298099236cad0389e739bc3b9214cc4905f80211838373efb"
+  },
+  {
+    "file": "generated/02-brand-characters.png",
+    "original": "exec-154c421e-6857-4e97-acd1-3ccb05b50591.png",
+    "description": "살깡말깡 브랜드와 캐릭터 보드",
+    "sha256": "3aab81d9d5616f4dc1031a5821f8843450195037567e5769523caeaa0ee5f141"
+  },
+  {
+    "file": "generated/03-logo-wordmark.png",
+    "original": "exec-df3265db-24a6-4fdd-9c7a-eeb800cb7151.png",
+    "description": "워드마크 원본",
+    "sha256": "d12eaad05ee5f1e65e18ab4c8a210911480b16d27a5bf775155b63c0c54c2ab2"
+  },
+  {
+    "file": "generated/04-logo-mark.png",
+    "original": "exec-5ae07b86-40b0-400f-87d5-b19e9a9001e5.png",
+    "description": "집과 말풍선 로고 마크 원본",
+    "sha256": "fee07347c8eaa0586cd16c617c9665c0f6e334089de1813cd98bae662dcca6be"
+  },
+  {
+    "file": "generated/05-pro-portrait.png",
+    "original": "exec-3cd2b22d-4413-4a9a-9be9-8a97904e1c2b.png",
+    "description": "살깡이 초상 원본",
+    "sha256": "fd7a01968456c0a34d12673779ffcf0d016458505f1f8749ab68fba78d7ffd54"
+  },
+  {
+    "file": "generated/06-con-portrait.png",
+    "original": "exec-c2cb799f-a4d5-4745-9f3a-513be3a64760.png",
+    "description": "말깡이 초상 원본",
+    "sha256": "915bb0a91f48825194a1ed389fcb1a92c5f9731b65f15267d996f2294a7341d4"
+  },
+  {
+    "file": "generated/07-guide-portrait.png",
+    "original": "exec-e6868e4d-61fd-40ef-839a-0caea8f8c602.png",
+    "description": "판깡이 초상 원본",
+    "sha256": "c4d8e85f21e0a8ec4b863151a33122438453c728a8ce91b7f8e86dbb232cb8b6"
+  },
+  {
+    "file": "generated/08-expressions-board.png",
+    "original": "exec-315b50e0-8797-4fa4-828b-e71fa3794f4a.png",
+    "description": "표정·동작 18종 시안",
+    "sha256": "a036fc6d60c31f3e4ba75a139d63b1d2983dbca2fb1ebe97e9e2b42ea3a35ff8"
+  },
+  {
+    "file": "generated/09-expressions-transparent.png",
+    "original": "exec-1a232ab1-cf04-4cab-b9aa-8adeaacaac52.png",
+    "description": "표정·동작 투명 원본 시트",
+    "sha256": "8d212e79488e07d44cce782fad44d0deb7dbc8c3c65bf4c0d91571d48681c1c4"
+  },
+  {
+    "file": "generated/10-ui-dense-rejected.png",
+    "original": "exec-c6160931-f8f3-4ae8-a7c5-ac3f444c5007.png",
+    "description": "캐릭터 과다 배치로 채택하지 않은 UI 시안",
+    "sha256": "e422d4824d8d691d365349bf64b28fcd2e56f7e15c7edb976c0020dd22fdeaf2"
+  },
+  {
+    "file": "generated/11-ui-restrained.png",
+    "original": "exec-d3e45a42-fedc-403e-a38b-56a5b6ad7cd0.png",
+    "description": "캐릭터 노출을 줄인 데스크톱 시안",
+    "sha256": "d3aba11a7861b760c899dfba623ef13c0c03084f244b75c702350748320485eb"
+  },
+  {
+    "file": "generated/12-living-hearing.png",
+    "original": "exec-38306766-594e-41d7-bbab-0c79a0e9be9d.png",
+    "description": "큰 생활 무대와 오른쪽 청문회: 이번 구현의 기준 시안",
+    "sha256": "1f548dc0a4b4a45575d93ce1e69d3a531422abee6d8b665d46083e1a88c1af53"
+  },
+  {
+    "file": "../../../frontend/public/assets/kkang/ui_pro_tidy.png",
+    "original": "exec-8dea4011-589a-4168-9b28-71cfe096c402.png",
+    "description": "살깡이 집어 들기 동작: 앱에서 사용하는 투명 PNG",
+    "sha256": "905f66c85f54849c3cd37906ce50d457b00197c1b4849ada2dae8e436c8a4703"
+  }
+]
