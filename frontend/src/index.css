@@ -92,11 +92,108 @@ button, input, textarea, select { font: inherit; }
 
 main { max-width: 1200px; margin: 0 auto; padding: 24px 16px 48px; }
 /* 인트로: 왼쪽 여백은 넉넉히, 오른쪽은 좁게. 도트 영역은 최대 폭 제한 */
-main:has(> .intro) {
+main:has(> .intro), main:has(> .hero) {
   max-width: none;
   padding-left: clamp(16px, 7vw, 140px);
   padding-right: clamp(16px, 2.5vw, 40px);
 }
+
+/* 인트로 히어로: 문구는 코드로, 그림은 글자 없는 일러스트 */
+.hero h1, .hero .eyebrow, .hero-cta, .hero-bubble { font-family: 'Jua', system-ui, sans-serif; font-weight: 400; }
+.hero {
+  display: grid;
+  grid-template-columns: minmax(300px, 520px) minmax(0, 1fr);
+  align-items: center;
+  gap: clamp(24px, 4vw, 64px);
+  min-height: min(calc(100vh - 120px), 760px);
+  margin-bottom: clamp(32px, 6vw, 72px);
+}
+.hero h1 { font-size: clamp(2rem, 4.4vw, 3.5rem); line-height: 1.2; margin: 0 0 20px; letter-spacing: -0.02em; }
+.hero-shout { color: var(--accent); font-size: 1.45em; }
+.hero-lead { font-size: 1.125rem; line-height: 1.6; margin: 0 0 32px; color: var(--fg); opacity: 0.85; }
+.primary.hero-cta { width: min(100%, 360px); padding: 18px 24px; border-radius: 999px; font-size: 1.125rem; }
+.hero-cats { margin: 16px 0 0; }
+.hero-art { position: relative; justify-self: end; width: 100%; max-width: 860px; }
+.hero-art img {
+  display: block; width: 100%; height: auto; border-radius: 24px;
+  -webkit-mask-image: radial-gradient(ellipse 70% 68% at 50% 50%, #000 50%, transparent 98%);
+  mask-image: radial-gradient(ellipse 70% 68% at 50% 50%, #000 50%, transparent 98%);
+}
+.hero-bubble {
+  position: absolute; margin: 0; padding: 8px 16px; border-radius: 999px;
+  background: #fff8ef; color: #1e1838; font-weight: 400; font-size: clamp(0.8125rem, 1.3vw, 1rem);
+  border: 3px solid #1e1838; white-space: nowrap; animation: bubble-bob 3.2s ease-in-out infinite;
+}
+.hero-bubble::after {
+  content: ''; position: absolute; bottom: -10px; width: 14px; height: 14px; background: inherit;
+  border: inherit; border-top: 0; border-left: 0; transform: rotate(45deg);
+}
+.hero-bubble.pro { left: 6%; top: 24%; }
+.hero-bubble.pro::after { right: 28%; }
+.hero-bubble.con { right: 2%; top: 32%; animation-delay: 1.4s; }
+.hero-bubble.con::after { left: 28%; }
+@keyframes bubble-bob { 0%, 100% { translate: 0 0; } 50% { translate: 0 -4px; } }
+.intro-form h2 { font-size: clamp(1.5rem, 3vw, 2rem); margin: 0 0 8px; }
+@media (max-width: 768px) {
+  .hero { grid-template-columns: 1fr; min-height: 0; gap: 8px; }
+  .hero-art { order: -1; justify-self: center; }
+  .primary.hero-cta { width: 100%; }
+}
+/* PC: 처음 시안 비율 — 그림이 화면 오른쪽 2/3를 꽉 채우고, 큰 제목이 그림 위로 살짝 겹친다 */
+@media (min-width: 769px) {
+  .hero {
+    position: relative; isolation: isolate; display: flex; flex-direction: column; justify-content: center; align-items: flex-start;
+    min-height: calc(100vh - 69px); padding: clamp(32px, 8vh, 88px) 0 110px; justify-content: flex-start;
+    /* 시안처럼 문구를 화면 왼쪽 4vw에 붙인다(폼 영역의 넓은 왼쪽 여백은 그대로) */
+    margin: -24px 0 clamp(32px, 6vw, 72px) calc(clamp(16px, 4vw, 64px) - clamp(16px, 7vw, 140px));
+  }
+  /* 왼쪽 문구는 처음 시안(1586px 기준) 치수를 vw로 옮긴 값 */
+  .hero { padding-top: 5vw; }
+  .hero-copy { position: relative; max-width: 50vw; text-shadow: 0 1px 2px rgb(18 18 42 / 0.9); -webkit-font-smoothing: antialiased; }
+  .hero .eyebrow { font-size: clamp(1rem, 1.75vw, 1.875rem); color: #b8a2f7; -webkit-text-stroke: 0.02em currentColor; margin: 0 0 0.6vw 0.3vw; }
+  .hero h1 {
+    /* 번지는 큰 그림자 대신 얇은 어두운 테두리로 그림 위에서도 또렷하게 */
+    text-shadow: 0 0 1px #12122a, 1px 1px 0 #12122a, -1px 1px 0 #12122a, 0 3px 0 rgb(18 18 42 / 0.7);
+    font-size: clamp(2.5rem, 5.4vw, 5.75rem); line-height: 1.04; letter-spacing: -0.055em;
+    -webkit-text-stroke: 0.025em currentColor; color: #fbf7ef; white-space: nowrap; margin: 0 0 2.4vw;
+  }
+  .hero-shout { display: inline-block; font-size: 1.36em; color: #b8a2f7; margin-bottom: -0.1em; }
+  .hero-lead { font-size: clamp(1rem, 1.5vw, 1.625rem); line-height: 1.65; color: #ddd8ee; opacity: 1; margin: 0 0 3.4vw 0.3vw; }
+  .primary.hero-cta {
+    width: clamp(280px, 27vw, 460px); padding: 0; height: clamp(56px, 5.2vw, 88px);
+    font-size: clamp(1.125rem, 1.75vw, 1.875rem); -webkit-text-stroke: 0.02em currentColor;
+    background: linear-gradient(180deg, #cdbcfd, #a78bf0); color: #1e1838;
+    box-shadow: 0 8px 28px rgb(167 139 240 / 0.35);
+  }
+  .hero-cats { font-size: clamp(0.875rem, 1.2vw, 1.25rem); color: #a9a3c6; word-spacing: 0.15em; margin: 2.2vw 0 0 0.4vw; }
+  .hero-art {
+    position: absolute; z-index: -1; top: 0; bottom: 0; right: calc(-1 * clamp(16px, 2.5vw, 40px));
+    width: 66vw; max-width: none;
+  }
+  .hero-art img {
+    width: 100%; height: 100%; object-fit: cover; object-position: 35% 50%; border-radius: 0;
+    -webkit-mask-image: linear-gradient(to right, transparent 0, #000 20%), linear-gradient(to bottom, #000 82%, transparent);
+    -webkit-mask-composite: source-in;
+    mask-image: linear-gradient(to right, transparent 0, #000 20%), linear-gradient(to bottom, #000 82%, transparent);
+    mask-composite: intersect;
+  }
+  .hero-bubble { font-size: clamp(1rem, 1.6vw, 1.625rem); padding: 12px 24px; }
+  .hero-bubble.pro { left: 8%; top: 27%; rotate: -5deg; }
+  .hero-bubble.con { left: auto; right: 4%; top: 41%; rotate: 5deg; }
+  .hero-tagline {
+    position: absolute; left: 3vw; right: 3vw; bottom: 2.6vw; margin: 0;
+    display: flex; align-items: center; gap: 1.2vw; color: #ddd8ee; font-size: clamp(0.875rem, 1.3vw, 1.375rem);
+  }
+  .hero-tagline span { color: #d9ccff; font-size: 1.6em; line-height: 1; }
+  .hero-tagline::before, .hero-tagline::after { content: ''; flex: 1; height: 1px; background: var(--line); }
+}
+/* 노트북·태블릿: 비율은 그대로, 그림을 조금 더 넓혀 겹침을 받아낸다 */
+@media (min-width: 769px) and (max-width: 1100px) {
+  .hero-copy { max-width: 60vw; }
+  .hero-art { width: 74vw; }
+  .hero-art img { object-position: 62% 50%; }
+}
+@media (max-width: 768px) { .hero-tagline { display: none; } }
 
 /* intro */
 .intro {
