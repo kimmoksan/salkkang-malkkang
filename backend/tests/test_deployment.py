@@ -46,15 +46,15 @@ def test_production_defaults_ignore_forwarded_headers(monkeypatch):
 def test_trusted_proxy_keeps_client_quotas_separate(monkeypatch):
     monkeypatch.setenv("RATE_LIMIT_PER_MIN", "1")
     client = TestClient(ProxyHeadersMiddleware(app, trusted_hosts="10.0.0.1"), client=("10.0.0.1", 1234))
-    body = {"category": "robot_vacuum", "scene_id": "rv_daily", "reason": "청소 부담"}
-    assert client.post("/api/hearing", json=body, headers={"X-Forwarded-For": "198.51.100.1"}).status_code == 200
-    assert client.post("/api/hearing", json=body, headers={"X-Forwarded-For": "198.51.100.2"}).status_code == 200
-    assert client.post("/api/hearing", json=body, headers={"X-Forwarded-For": "198.51.100.1"}).status_code == 429
+    body = {"category": "dryer", "product_text": "건조기", "reason": "빨래 부담"}  # 제한이 걸리는 입력 API로 확인
+    assert client.post("/api/intake", json=body, headers={"X-Forwarded-For": "198.51.100.1"}).status_code == 200
+    assert client.post("/api/intake", json=body, headers={"X-Forwarded-For": "198.51.100.2"}).status_code == 200
+    assert client.post("/api/intake", json=body, headers={"X-Forwarded-For": "198.51.100.1"}).status_code == 429
 
 
 def test_untrusted_client_cannot_bypass_quota_with_spoofed_header(monkeypatch):
     monkeypatch.setenv("RATE_LIMIT_PER_MIN", "1")
     client = TestClient(ProxyHeadersMiddleware(app, trusted_hosts="10.0.0.1"), client=("198.51.100.10", 1234))
-    body = {"category": "robot_vacuum", "scene_id": "rv_daily", "reason": "청소 부담"}
-    assert client.post("/api/hearing", json=body, headers={"X-Forwarded-For": "198.51.100.1"}).status_code == 200
-    assert client.post("/api/hearing", json=body, headers={"X-Forwarded-For": "198.51.100.2"}).status_code == 429
+    body = {"category": "dryer", "product_text": "건조기", "reason": "빨래 부담"}  # 제한이 걸리는 입력 API로 확인
+    assert client.post("/api/intake", json=body, headers={"X-Forwarded-For": "198.51.100.1"}).status_code == 200
+    assert client.post("/api/intake", json=body, headers={"X-Forwarded-For": "198.51.100.2"}).status_code == 429

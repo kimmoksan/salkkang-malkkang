@@ -20,7 +20,7 @@ def fixture_catalog(monkeypatch):
 def test_list_and_category_filter_keep_discontinued():
     items = client.get("/api/catalog").json()
     assert len(items) == 3
-    assert set(items[0]) == {"brand", "model", "name", "url", "status"}
+    assert set(items[0]) == {"brand", "model", "name", "url", "status", "variant"}
     robots = client.get("/api/catalog?category=robot_vacuum").json()
     assert [p["model"] for p in robots] == ["TEST-R1", "TEST-R2"]
     assert robots[1]["status"] == "단종"
@@ -79,3 +79,13 @@ def test_missing_or_broken_json_returns_empty_without_crashing(monkeypatch, tmp_
 
 def test_empty_manual_input_is_still_rejected():
     assert client.post("/api/intake", json={"category": "dryer", "reason": "빨래 말리기"}).status_code == 422
+
+
+def test_same_name_models_get_distinguishing_variant():
+    from app.catalog import CatalogEntry, with_variants
+    base = dict(brand="LG전자", category="dryer", name="트롬 건조기", url="https://www.lge.co.kr/x", status="판매중", checked_at="2026-11-02")
+    a = CatalogEntry(model="A20", p={"건조 용량 (kg)": "20", "색상": "화이트"}, **base)
+    b = CatalogEntry(model="B18", p={"건조 용량 (kg)": "18", "색상": "화이트"}, **base)
+    c = CatalogEntry(model="C1", p={"건조 용량 (kg)": "9"}, **{**base, "name": "다른 이름"})
+    out = {x.model: x.variant for x in with_variants([a, b, c])}
+    assert out == {"A20": "건조 용량 20kg", "B18": "건조 용량 18kg", "C1": None}  # 이름이 겹칠 때만, 같은 값(색상)은 제외

@@ -41,13 +41,13 @@ export default function Scenes({ product, onBack, onFinish, hearings, bases, ans
           <h1 ref={heading} tabIndex={-1}>{story.title}</h1> <span className="tag outline scene-note">사용 상황 예시 · AI 구성 아님</span>
         </header>
         <div className="living-player">
-          <Stage scene={scene} paused={paused || !active} cast={{ claim: focus, evidence: hearing?.evidence ?? [] }} />
+          <Stage scene={scene} paused={paused || !active} cast={{ claim: focus, evidence: hearing?.evidence ?? [], claims: hearing?.claims ?? [], answered: hearing?.answered ?? null }} />
           <div className="player-bar">
             <button type="button" className="secondary small" aria-pressed={paused} onClick={() => setPaused(!paused)}>{paused ? '움직임 다시 보기' : '움직임 멈추기'}</button>
             <p className="caption">{story.action}</p>
           </div>
           <nav className="story-trail" aria-label="사용 상황 돌아보기">
-            {scenes.map((s, i) => <button key={s.id} type="button" disabled={updatingAnswer} aria-current={i === index ? 'step' : undefined} onClick={() => onIndexChange(i)}>{SCENE_STORY[s.id].short}</button>)}
+            {scenes.map((s, i) => <button key={s.id} type="button" aria-current={i === index ? 'step' : undefined} onClick={() => onIndexChange(i)}>{SCENE_STORY[s.id].short}</button>)}
           </nav>
         </div>
         <details className="card scene-context">
@@ -64,12 +64,12 @@ export default function Scenes({ product, onBack, onFinish, hearings, bases, ans
         <HearingPanel key={scene.id} product={product} sceneId={scene.id} answer={answer} cached={hearings[scene.id]} base={bases[scene.id]} onLoaded={onHearing} onAnswer={(a) => onAnswer(scene.id, a)} onFocus={(claim) => setSelected({ scene: scene.id, claim })} />
         <div className="story-next">
           <div className="guide-line"><Kkang pose="guide_present" size="sm" /><p><strong>판깡이</strong><br />{story.bridge}</p></div>
-          <button type="button" className="primary" disabled={updatingAnswer} onClick={index < scenes.length - 1 ? () => onIndexChange(index + 1) : onFinish}>{story.next} →</button>
-          {updatingAnswer && <p className="muted small" role="status">네 답을 반영하고 있어. 잠시만 기다려 줘.</p>}
+          <button type="button" className="primary" onClick={index < scenes.length - 1 ? () => onIndexChange(index + 1) : onFinish}>{story.next} →</button>
+          {updatingAnswer && <p className="muted small" role="status">네 답을 반영하고 있어. 기다리지 않고 넘어가도 괜찮아.</p>}
           {!hearing && !updatingAnswer && <p className="muted small">지금 넘어가면 이 장면은 ‘확인 안 함’으로 남아요.</p>}
         </div>
       </section>
     </div>
-    <div className="row between nav-row"><button type="button" className="link" onClick={onBack}>← 제품 확인</button><button type="button" className="link small" disabled={updatingAnswer} onClick={onFinish}>지금까지 본 내용 정리하기</button></div>
+    <div className="row between nav-row"><button type="button" className="link" onClick={onBack}>← 제품 확인</button><button type="button" className="link small" onClick={onFinish}>지금까지 본 내용 정리하기</button></div>
   </section>
 }
