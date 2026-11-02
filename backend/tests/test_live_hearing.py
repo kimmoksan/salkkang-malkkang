@@ -51,8 +51,8 @@ def test_fake_source_is_retried_then_rejected():
 
 def test_answer_must_be_an_option_of_previous_question():
     prev = live_hearing(HearingRequest(**REQ), lambda p: GOOD)
-    with pytest.raises(HearingError):
-        live_hearing(HearingRequest(**REQ, answer="nope", previous=prev), lambda p: GOOD)
+    with pytest.raises(GeminiError):  # 어긋난 답은 예시 대체로(AI 호출 없이)
+        live_hearing(HearingRequest(**REQ, answer="nope", previous=prev), lambda p: pytest.fail("AI 호출"))
     seen = {}
     h = live_hearing(HearingRequest(**REQ, answer="yes", previous=prev), lambda p: seen.setdefault("p", p) and GOOD)
     assert h.answered == "yes" and h.question == prev.question and "괜찮아요" in seen["p"]
@@ -131,3 +131,27 @@ def test_skip_returns_previous_without_calling_ai():
     prev = live_hearing(HearingRequest(**REQ), lambda p: GOOD)
     h = live_hearing(HearingRequest(**REQ, answer="skip", previous=prev), lambda p: pytest.fail("건너뛰기에 AI 호출"))
     assert h.answered == "skip" and h.claims == prev.claims and h.mode == "live"
+
+
+def test_prompt_lists_other_scene_claims_and_keeps_first_round_unrevised():
+    seen = {}
+    live_hearing(HearingRequest(**REQ, others=["pro: 고양이 털도 매일 청소돼요"]), lambda p: seen.setdefault("p", p) and GOOD)
+    assert "<다른장면발언>" in seen["p"] and "고양이 털도 매일 청소돼요" in seen["p"]
+    assert "되풀이하지 않는다" in seen["p"] and "첫 공방에서는 모든 발언을 kept" in seen["p"]
+    with pytest.raises(ValueError):
+        HearingRequest(**REQ, others=["x" * 301])
+
+
+def test_api_mismatched_answer_falls_back_instead_of_dead_end(monkeypatch):
+    live_env(monkeypatch)
+    monkeypatch.setattr(main, "generate_json", lambda *a, **k: pytest.fail("AI 호출"))
+    prev = live_hearing(HearingRequest(**REQ), lambda p: GOOD).model_dump()
+    body = client.post("/api/hearing", json={**REQ, "answer": "ok", "previous": {**prev, "question": None}})
+    assert body.status_code == 200 and body.json()["mode"] == "mock" and "맞추지 못했어요" in body.json()["notice"]
+
+
+def test_health_shows_calls_left_in_live_mode(monkeypatch):
+    live_env(monkeypatch)
+    monkeypatch.setenv("GEMINI_DAILY_LIMIT", "15")
+    monkeypatch.setattr(gemini, "_usage", {"day": gemini.pacific_day(), "count": 4, "exhausted": False})
+    assert client.get("/api/health").json()["ai_calls_left"] == 11

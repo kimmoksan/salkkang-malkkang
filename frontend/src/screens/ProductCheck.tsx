@@ -80,13 +80,13 @@ export default function ProductCheck({ product, busy, errors, message, onBack, o
               <label htmlFor="edit_reason" className="sr-only">구매 이유</label>
               <input id="edit_reason" maxLength={200} value={reason} onChange={(e) => setReason(e.target.value)} />
               <div className="row">
-                <button type="submit" className="primary small" disabled={busy || !reason.trim()}>저장</button>
+                <button type="submit" className="primary small" disabled={busy}>저장</button>
                 <button type="button" className="secondary small" onClick={() => { setReason(product.reason); setEditing(false) }}>취소</button>
               </div>
             </form>
           ) : (
             <p className="quote">
-              {product.reason}
+              {product.reason || <span className="muted">적지 않음 (보편적인 장단점으로 살펴봐요)</span>}
               {!product.is_example && (
                 <button type="button" className="link small" onClick={() => setEditing(true)}>수정</button>
               )}
@@ -106,7 +106,7 @@ export default function ProductCheck({ product, busy, errors, message, onBack, o
                 <tr key={s.key}>
                   <th scope="row">{s.label}</th>
                   <td>{s.status === 'needs_check' ? <span className="muted">{s.value || '확인 필요'}</span> : s.value}</td>
-                  <td><span className="tag outline small">{s.status === 'needs_check' ? (s.value ? 'AI가 찾음 · 확인 필요' : '확인 필요') : sourceTag(s.source_id) === '제조사 공식' ? '제조사 확인' : sourceTag(s.source_id)}</span></td>
+                  <td><span className="tag outline small">{s.status === 'needs_check' ? (product.sources.some((source) => source.id === s.source_id && source.kind === 'ai') ? 'AI가 찾음 · 확인 필요' : '확인 필요') : sourceTag(s.source_id) === '제조사 공식' ? '제조사 확인' : sourceTag(s.source_id)}</span></td>
                 </tr>
               ))}
             </tbody>

@@ -40,7 +40,7 @@ class IntakeRequest(BaseModel):
     category: Category
     catalog_model: str | None = Field(default=None, min_length=1, max_length=120)
     product_text: str = Field(default="", max_length=PRODUCT_TEXT_MAX)
-    reason: str = Field(min_length=1, max_length=REASON_MAX)
+    reason: str = Field(default="", max_length=REASON_MAX)  # 선택 입력(비워도 진행)
 
     @field_validator("product_text", "reason")
     @classmethod
@@ -50,8 +50,8 @@ class IntakeRequest(BaseModel):
 
     @model_validator(mode="after")
     def required_inputs(self):
-        if not self.reason or (not self.catalog_model and not self.product_text):
-            raise ValueError("제품 정보와 구매 이유를 입력해 주세요.")
+        if not self.catalog_model and not self.product_text:
+            raise ValueError("제품 정보를 입력해 주세요.")
         return self
 
 

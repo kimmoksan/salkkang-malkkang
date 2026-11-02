@@ -46,6 +46,15 @@ def _take_quota() -> None:
         _usage["count"] += 1
 
 
+def calls_left() -> int:
+    """오늘 서버가 더 보낼 수 있는 AI 호출 수(점검·안내용)."""
+    limit = int(os.getenv("GEMINI_DAILY_LIMIT", "15"))
+    with _lock:
+        if _usage["day"] != pacific_day():
+            return limit
+        return 0 if _usage["exhausted"] else max(0, limit - _usage["count"])
+
+
 def _mark_exhausted() -> None:
     with _lock:
         _usage["exhausted"] = True

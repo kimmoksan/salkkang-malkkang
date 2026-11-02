@@ -392,7 +392,8 @@ button:disabled { opacity: 0.6; cursor: wait; }
   display: block;
   height: auto;
   object-fit: contain;
-  animation: kkang-pop 0.35s ease-out both, kkang-bob 2.6s ease-in-out infinite;
+  transform-origin: 50% 90%;
+  animation: kkang-pop 0.35s ease-out both, var(--kk-motion, kkang-bob) var(--kk-dur, 2.6s) ease-in-out infinite;
 }
 .kkang-sm { width: 72px; }
 .kkang-md { width: 104px; }
@@ -413,3 +414,250 @@ button:disabled { opacity: 0.6; cursor: wait; }
 /* 멈춤 상태에서 'paused'로 두면 새로 나타난 깡이가 등장 첫 프레임(투명)에 멈춰 사라진다 → 애니메이션 자체를 끈다 */
 :root[data-still] .kkang { animation: none; }
 :root[data-still] body::before { animation-play-state: paused; }
+/* 생활 무대와 대화: 캐릭터는 장면 안에, 근거는 발언 바로 아래에. */
+.review-main { max-width: 1600px; padding: 28px clamp(16px, 2.5vw, 40px) 48px; }
+.story-header { display: flex; align-items: center; justify-content: space-between; gap: 20px; margin-bottom: 8px; }
+.story-header h1 { font-size: clamp(1.45rem, 2.5vw, 2rem); letter-spacing: -.04em; }
+.story-header .eyebrow { font-size: .875rem; }
+.living-layout { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(340px, 1fr); align-items: start; gap: 24px; }
+.living-stage-column { position: sticky; top: 20px; display: grid; gap: 14px; min-width: 0; }
+.living-player { padding: 10px; border: 1px solid var(--line); border-radius: 20px; background: rgb(27 27 58 / .65); }
+.living-player .stage { border-radius: 12px; border: 0; }
+.living-player .player-bar { padding: 18px 8px 12px; }
+.living-player .caption { font-size: .8125rem; color: var(--muted); line-height: 1.6; }
+.story-trail { display: flex; gap: 4px; padding: 8px; }
+.story-trail button { flex: 1; padding: 10px 4px; color: var(--muted); background: none; border: 0; border-bottom: 3px solid var(--line); cursor: pointer; font-size: .8125rem; }
+.story-trail [aria-current='step'] { color: var(--accent); border-color: var(--accent); }
+.story-hint { margin: 10px 8px; line-height: 1.6; }
+.scene-context { background: rgb(27 27 58 / .4); font-size: .875rem; line-height: 1.65; }
+.scene-context summary { cursor: pointer; color: var(--muted); }
+.conversation { padding: clamp(16px, 2vw, 28px); border-radius: 20px; min-width: 0; background: rgb(27 27 58 / .6); }
+.conversation-heading { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; margin-bottom: 18px; }
+.conversation-heading h2 { margin: 0; font-size: 1.45rem; letter-spacing: -.04em; }
+.hearing-thread { display: grid; gap: 20px; }
+.chat-claims { gap: 22px; }
+.chat-speaker { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+.chat-speaker strong { color: var(--pro); font-size: 1rem; }
+.side-con .chat-speaker strong { color: var(--con); }
+.chat-speaker strong span { font-size: .8em; margin-right: 5px; }
+.chat-claim .bubble { padding: 16px 18px; line-height: 1.75; background: rgb(18 18 42 / .45); font-size: .9375rem; overflow-wrap: anywhere; }
+.claim-evidence { margin-top: 12px; font-size: .8125rem; }
+.claim-evidence summary { color: var(--muted); cursor: pointer; }
+.claim-evidence[open] summary { color: var(--accent); }
+.claim-evidence .evidence-list { border-top: 1px solid var(--line); padding-top: 12px; }
+.claim-change { margin: 12px 0; padding: 12px; border-left: 2px solid var(--accent); background: rgb(196 181 253 / .06); font-size: .8125rem; }
+.claim-change strong { color: var(--accent); }
+.claim-change p { margin: 6px 0 0; }
+.conversation .question { padding: 18px; background: rgb(196 181 253 / .06); }
+.question-body { min-width: 0; line-height: 1.65; }
+.question-body .row { margin: 8px 0; }
+.question-body button { text-align: left; line-height: 1.5; }
+.story-next { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 20px; margin: 16px 8px 8px; padding-top: 16px; border-top: 1px solid var(--line); }
+.story-next .guide-line { flex: 1 1 240px; min-width: 0; margin-bottom: 0; }
+.story-next > p { flex-basis: 100%; margin: 0; }
+.guide-line { display: flex; gap: 12px; align-items: center; line-height: 1.6; margin-bottom: 16px; }
+.guide-line p { font-size: .875rem; margin: 0; }
+.guide-line strong { color: var(--accent); }
+.guide-line .kkang { width: 48px; flex: 0 0 48px; }
+.story-next > .primary { flex: 0 1 auto; max-width: 100%; border-radius: 12px; }
+.conversation .hearing-loading { min-height: 180px; }
+.conversation .hearing-loading .kkang { width: 48px; animation: none; }
+/* 동작은 장면 진입 때 한 번. 말하는 표정은 근거를 펼칠 때 교체된다. */
+.stage-cast { position: absolute; inset: 0; pointer-events: none; }
+.scene-actor { position: absolute; width: 17%; bottom: 14%; filter: drop-shadow(0 4px 2px rgb(0 0 0 / .22)); }
+.actor-pro { left: 24%; }
+.actor-con { right: 17%; width: 15%; bottom: 20%; }
+.stage .actor-body { width: 100%; height: auto; image-rendering: auto; object-fit: contain; animation: actor-notice .65s ease-out both; }
+.stage .actor-object { position: absolute; width: 32%; height: auto; right: 2%; bottom: 4%; object-fit: contain; animation: tidy-object 1.8s ease-in-out both; }
+.actor-tidy .actor-body { transform-origin: 50% 90%; animation: tidy-reach 1.8s ease-in-out both; }
+.actor-speaking::after { content: ''; position: absolute; width: 32%; height: 2px; left: 34%; bottom: -5%; border-radius: 4px; background: var(--pro); }
+.actor-con.actor-speaking::after { background: var(--con); }
+@keyframes actor-notice { 0% { transform: translateY(3px) rotate(-4deg); } 60% { transform: translateY(-2px) rotate(2deg); } 100% { transform: none; } }
+@keyframes tidy-reach { 0%, 100% { transform: rotate(0); } 40% { transform: translate(5%, 5%) rotate(9deg); } 70% { transform: translate(2%, -4%) rotate(-3deg); } }
+@keyframes tidy-object { from { transform: translate(35%, 35%); } 40% { transform: translate(35%, 35%); } to { transform: translate(0, -40%); } }
+:root[data-still] .stage-cast *, .stage.paused .stage-cast * { animation: none !important; }
+/* 결과: 같은 무게의 세 가지 정리, 옆에는 사용자가 고르는 결정 노트. */
+.decision-layout { display: grid; grid-template-columns: minmax(0, 1.55fr) minmax(300px, 1fr); gap: 24px; align-items: start; }
+.decision-notes { display: grid; gap: 16px; min-width: 0; }
+.decision-notes .summary-grid { grid-template-columns: 1fr; }
+.decision-summary .card { border-radius: 18px; background: rgb(27 27 58 / .7); }
+.decision-summary .product-recap { border-left: 3px solid var(--accent); }
+.summary-label { display: flex; align-items: baseline; flex-wrap: wrap; gap: 12px; }
+.summary-label span { font-size: .8125rem; color: var(--muted); font-weight: 400; }
+.benefit-label { color: var(--pro); }
+.cost-label { color: var(--con); }
+.decision-summary .my-decision { position: sticky; top: 20px; padding: 24px; }
+.my-decision .card-kkang { align-items: flex-start; }
+.my-decision .kkang { width: 56px; flex: 0 0 56px; }
+.my-decision .decision-choices { display: grid; grid-template-columns: 1fr; gap: 10px; margin: 24px 0; }
+.my-decision .decision-choices .chip { padding: 15px; gap: 12px; border-radius: 12px; }
+.my-decision .decision-choices input { width: auto; margin: 0; }
+.my-decision .primary { width: 100%; margin-top: 12px; }
+.choice-ack { color: var(--accent); font-size: .875rem; line-height: 1.7; }
+.decision-summary .summary-items { line-height: 1.7; }
+.answer-recap summary { color: var(--accent); }
+@media (max-width: 900px) {
+  .living-layout, .decision-layout { grid-template-columns: minmax(0, 1fr); }
+  .living-stage-column, .decision-summary .my-decision { position: static; }
+  .story-header { align-items: flex-start; flex-direction: column; gap: 12px; }
+  .living-hearing { gap: 12px; }
+}
+@media (max-width: 480px) {
+  .review-main { padding: 18px 12px 36px; }
+  .living-layout, .decision-layout { gap: 14px; }
+  .living-player { padding: 6px; border-radius: 14px; }
+  .living-player .player-bar { padding: 12px 6px 4px; gap: 10px; }
+  .conversation, .decision-summary .my-decision { padding: 16px; }
+  .story-header h1 { font-size: 1.4rem; }
+  .chat-claim .bubble { padding: 14px; }
+  .story-trail button { font-size: .75rem; }
+  .story-next > .primary { width: 100%; }
+  .story-header .eyebrow { overflow-wrap: anywhere; }
+}
+@media (prefers-reduced-motion: reduce) { .stage-cast * { animation: none !important; } }
+/* 잠깡! 말깡이는 확인할 때만 짧게 갸웃한다. 반복 동작은 없다. */
+.stage .actor-con .actor-body { transform-origin: 50% 88%; animation: con-peek 1.4s ease-in-out both; }
+@keyframes con-peek { 0%, 100% { transform: rotate(0); } 28% { transform: rotate(-7deg) translateY(-2%); } 65% { transform: rotate(4deg); } }
+@media (prefers-reduced-motion: reduce) { .stage .actor-con .actor-body { animation: none; } }
+/* 배경은 그대로 두고, 바뀐 소품만 짧게 들어와 장면을 잇는다. */
+.living-player .layer { animation: scene-layer-in .4s ease-out both; }
+@keyframes scene-layer-in { from { opacity: .6; transform: translateY(3px); } to { opacity: 1; transform: none; } }
+:root[data-still] .living-player .layer, .living-player .stage.paused .layer { animation: none; }
+@media (prefers-reduced-motion: reduce) { .living-player .layer { animation: none; } }
+
+/* 깡이 포즈별 동작: 회전·이동·크기는 개별 속성(rotate/translate/scale)이라 등장(transform)과 겹치지 않는다. */
+.kk-bob { --kk-motion: kkang-bob; --kk-dur: 2.6s; }
+.kk-wave { --kk-motion: kk-wave; --kk-dur: 2.8s; }
+.kk-hop { --kk-motion: kk-hop; --kk-dur: 2.4s; }
+.kk-tilt { --kk-motion: kk-tilt; --kk-dur: 4s; }
+.kk-scan { --kk-motion: kk-scan; --kk-dur: 3.2s; }
+.kk-nod { --kk-motion: kk-nod; --kk-dur: 2.6s; }
+.kk-raise { --kk-motion: kk-raise; --kk-dur: 2.2s; }
+.kk-shake { --kk-motion: kk-shake; --kk-dur: 2.6s; }
+.kk-squish { --kk-motion: kk-squish; --kk-dur: 3s; }
+@keyframes kk-wave { 0%, 55%, 100% { rotate: 0deg; } 10% { rotate: -7deg; } 20% { rotate: 6deg; } 30% { rotate: -5deg; } 40% { rotate: 3deg; } }
+@keyframes kk-hop { 0%, 55%, 100% { translate: 0 0; scale: 1; } 10% { scale: 1.06 .92; } 25% { translate: 0 -9%; scale: .96 1.05; } 40% { translate: 0 0; scale: 1.05 .95; } 48% { scale: 1; } }
+@keyframes kk-tilt { 0%, 100% { rotate: 0deg; } 25% { rotate: -6deg; } 50% { rotate: 0deg; } 70% { rotate: 4deg; } }
+@keyframes kk-scan { 0%, 100% { translate: 0 0; rotate: 0deg; } 30% { translate: -4% 0; rotate: -2deg; } 65% { translate: 4% 0; rotate: 2deg; } }
+@keyframes kk-nod { 0%, 45%, 100% { translate: 0 0; rotate: 0deg; } 12% { translate: 0 4%; rotate: 3deg; } 24% { translate: 0 0; rotate: 0deg; } 34% { translate: 0 3%; } }
+@keyframes kk-raise { 0%, 60%, 100% { translate: 0 0; } 14% { translate: 0 -8%; } 28% { translate: 0 0; } 38% { translate: 0 -4%; } }
+@keyframes kk-shake { 0%, 40%, 100% { translate: 0 0; } 5%, 15%, 25% { translate: -3% 0; } 10%, 20%, 30% { translate: 3% 0; } }
+@keyframes kk-squish { 0%, 100% { scale: 1; } 30% { scale: 1.04 .94; } 60% { scale: .98 1.02; } }
+/* 장면 속 깡이: 등장 연출이 끝난 뒤 같은 포즈 동작을 이어 한다(감싸는 칸이 움직여 안쪽 연출과 겹치지 않음). */
+.stage .scene-actor { transform-origin: 50% 95%; animation: var(--kk-motion, kkang-bob) var(--kk-dur, 2.6s) ease-in-out 1.9s infinite; }
+.stage .actor-speaking { --kk-dur: 1.8s; }
+
+/* 결과: 깡이가 직접 말하는 말풍선 */
+.say-list { list-style: none; padding: 0; margin: 0; display: grid; gap: 14px; }
+.say { display: flex; gap: 10px; align-items: flex-start; }
+.say .kkang { width: 56px; flex: 0 0 56px; }
+.say-bubble { position: relative; flex: 1; min-width: 0; padding: 10px 14px; border-radius: 14px; border: 1px solid var(--line); background: #1f1f42; line-height: 1.7; overflow-wrap: anywhere; }
+.say-bubble::before { content: ''; position: absolute; left: -7px; top: 18px; width: 12px; height: 12px; rotate: 45deg; background: inherit; border-left: inherit; border-bottom: inherit; border-top: 0; border-right: 0; }
+.say-bubble p { margin: 0 0 6px; }
+.say-pro .say-bubble { border-color: color-mix(in srgb, var(--pro) 45%, var(--line)); }
+.say-con .say-bubble { border-color: color-mix(in srgb, var(--con) 45%, var(--line)); }
+.say-guide .say-bubble { border-color: color-mix(in srgb, var(--accent) 45%, var(--line)); }
+.say-who { font-size: .75rem; font-weight: 700; margin-bottom: 2px !important; }
+.say-pro .say-who { color: var(--pro); }
+.say-con .say-who { color: var(--con); }
+.say-guide .say-who { color: var(--accent); }
+@media (max-width: 480px) { .say .kkang { width: 44px; flex-basis: 44px; } }
+
+/* 첫 화면에 장면·대화·질문·판깡이 다음 버튼이 다 들어오게: 제목은 왼쪽 열로, 대화는 맨 위부터, 다음 버튼은 대화 맨 아래 */
+.living-stage-column .story-header { display: block; margin: 0; }
+.living-stage-column .story-header h1 { display: inline; }
+.scene-note { font-size: .6875rem; padding: 1px 8px; margin-left: 8px; vertical-align: middle; white-space: nowrap; }
+.conversation { padding: 16px 20px; }
+.conversation-heading { margin-bottom: 8px; }
+.conversation-heading h2 { font-size: 1.2rem; }
+.conversation .chat-claim .bubble { padding: 10px 14px; }
+.conversation .chat-claims { gap: 8px; margin: 8px 0; }
+.conversation .question { padding: 12px 14px; margin-top: 8px; }
+.conversation .story-next { margin: 10px 0 0; padding-top: 10px; }
+.conversation .story-next .kkang { width: 40px; flex-basis: 40px; }
+
+/* 장면 속 깡이: 양옆에서 걸어 들어오고, 머리 위에 감정 표시가 떠오른다. */
+.stage .actor-pro { animation: actor-in-left .7s ease-out both, var(--kk-motion, kkang-bob) var(--kk-dur, 2.6s) ease-in-out .6s infinite; }
+.stage .actor-con { animation: actor-in-right .7s ease-out .15s both, var(--kk-motion, kkang-bob) var(--kk-dur, 2.6s) ease-in-out .75s infinite; }
+@keyframes actor-in-left { from { translate: -60% 0; opacity: 0; } to { translate: 0 0; opacity: 1; } }
+@keyframes actor-in-right { from { translate: 60% 0; opacity: 0; } to { translate: 0 0; opacity: 1; } }
+.actor-emote { position: absolute; left: 50%; top: -14%; translate: -50% 0; font: 700 clamp(12px, 1.6vw, 20px)/1 system-ui, sans-serif; color: #fff; text-shadow: 0 0 0 #000, 2px 2px 0 #1a1236; pointer-events: none; animation: emote-float 2.4s ease-in-out .9s infinite both; }
+.actor-pro .actor-emote { color: var(--pro); }
+.actor-con .actor-emote { color: var(--con); }
+.actor-emote:empty { display: none; }
+@keyframes emote-float { 0% { opacity: 0; translate: -50% 20%; scale: .6; } 15% { opacity: 1; translate: -50% 0; scale: 1.1; } 25% { scale: 1; } 70% { opacity: 1; translate: -50% -15%; } 90%, 100% { opacity: 0; translate: -50% -25%; } }
+
+/* 깡이 장면 동작 30개 (회전·이동·크기 개별 속성. 살깡이는 오른쪽, 말깡이는 왼쪽이 제품 쪽) */
+.kc-joy-hop { --kk-motion: kc-joy-hop; --kk-dur: .8s; }
+.kc-joy-double { --kk-motion: kc-joy-double; --kk-dur: 1.1s; }
+.kc-joy-spin { --kk-motion: kc-joy-spin; --kk-dur: 1.4s; }
+.kc-joy-wiggle { --kk-motion: kc-joy-wiggle; --kk-dur: .9s; }
+.kc-joy-cheer { --kk-motion: kc-joy-cheer; --kk-dur: 1s; }
+.kc-show-sweep { --kk-motion: kc-show-sweep; --kk-dur: 2.1s; }
+.kc-show-point { --kk-motion: kc-show-point; --kk-dur: 1.4s; }
+.kc-show-sparkle { --kk-motion: kc-show-sparkle; --kk-dur: 1.2s; }
+.kc-show-lean { --kk-motion: kc-show-lean; --kk-dur: 2s; }
+.kc-show-bounce { --kk-motion: kc-show-bounce; --kk-dur: 1s; }
+.kc-nod-nod { --kk-motion: kc-nod-nod; --kk-dur: 1.1s; }
+.kc-nod-slow { --kk-motion: kc-nod-slow; --kk-dur: 1.8s; }
+.kc-nod-bow { --kk-motion: kc-nod-bow; --kk-dur: 1.6s; }
+.kc-nod-sway { --kk-motion: kc-nod-sway; --kk-dur: 1.6s; }
+.kc-nod-happy { --kk-motion: kc-nod-happy; --kk-dur: 1.2s; }
+.kc-hmm-sway { --kk-motion: kc-hmm-sway; --kk-dur: 2.4s; }
+.kc-hmm-tap { --kk-motion: kc-hmm-tap; --kk-dur: .9s; }
+.kc-hmm-tilt { --kk-motion: kc-hmm-tilt; --kk-dur: 2.2s; }
+.kc-hmm-squint { --kk-motion: kc-hmm-squint; --kk-dur: 1.8s; }
+.kc-hmm-step { --kk-motion: kc-hmm-step; --kk-dur: 2.4s; }
+.kc-probe-approach { --kk-motion: kc-probe-approach; --kk-dur: 4.2s; }
+.kc-probe-peer { --kk-motion: kc-probe-peer; --kk-dur: 2.1s; }
+.kc-probe-scan { --kk-motion: kc-probe-scan; --kk-dur: 1.4s; }
+.kc-probe-zoom { --kk-motion: kc-probe-zoom; --kk-dur: 2.1s; }
+.kc-probe-circle { --kk-motion: kc-probe-circle; --kk-dur: 2.8s; }
+.kc-shake-head { --kk-motion: kc-shake-head; --kk-dur: .9s; }
+.kc-shake-slow { --kk-motion: kc-shake-slow; --kk-dur: 1.6s; }
+.kc-shake-sigh { --kk-motion: kc-shake-sigh; --kk-dur: 1.6s; }
+.kc-shake-shrug { --kk-motion: kc-shake-shrug; --kk-dur: 1.4s; }
+.kc-shake-jot { --kk-motion: kc-shake-jot; --kk-dur: 1.1s; }
+@keyframes kc-joy-hop { 0%, 100% { translate: 0 0; scale: 1; } 20% { scale: 1.08 .9; } 50% { translate: 0 -16%; scale: .94 1.08; } 80% { translate: 0 0; scale: 1.06 .94; } }
+@keyframes kc-joy-double { 0%, 100% { translate: 0 0; } 20% { translate: 0 -12%; } 40% { translate: 0 0; } 60% { translate: 0 -8%; } 80% { translate: 0 0; } }
+@keyframes kc-joy-spin { 0% { rotate: 0deg; translate: 0 0; } 50% { rotate: 180deg; translate: 0 -12%; } 100% { rotate: 360deg; translate: 0 0; } }
+@keyframes kc-joy-wiggle { 0%, 100% { rotate: 0deg; } 25% { rotate: -10deg; } 75% { rotate: 10deg; } }
+@keyframes kc-joy-cheer { 0%, 100% { scale: 1; translate: 0 0; } 40% { scale: 1.06 1.14; translate: 0 -10%; } 60% { scale: 1.04 1.1; translate: 0 -10%; } }
+@keyframes kc-show-sweep { 0%, 100% { translate: 0 0; rotate: 0deg; } 30% { translate: 10% -4%; rotate: 8deg; } 60% { translate: 12% 0; rotate: 4deg; } }
+@keyframes kc-show-point { 0%, 100% { translate: 0 0; } 25% { translate: 8% 0; rotate: 6deg; } 50% { translate: 8% -6%; rotate: 6deg; } 75% { translate: 4% 0; rotate: 0deg; } }
+@keyframes kc-show-sparkle { 0%, 100% { scale: 1; } 30% { scale: 1.12; } 50% { scale: .98; } 70% { scale: 1.08; } }
+@keyframes kc-show-lean { 0%, 100% { rotate: 0deg; translate: 0 0; } 40%, 60% { rotate: 12deg; translate: 6% 2%; } }
+@keyframes kc-show-bounce { 0%, 100% { translate: 0 0; } 25% { translate: 4% -8%; } 50% { translate: 8% 0; } 75% { translate: 4% -8%; } }
+@keyframes kc-nod-nod { 0%, 100% { rotate: 0deg; translate: 0 0; } 20% { rotate: 8deg; translate: 0 5%; } 40% { rotate: 0deg; translate: 0 0; } 60% { rotate: 8deg; translate: 0 5%; } 80% { rotate: 0deg; translate: 0 0; } }
+@keyframes kc-nod-slow { 0%, 100% { translate: 0 0; } 50% { translate: 0 7%; rotate: 5deg; } }
+@keyframes kc-nod-bow { 0%, 100% { rotate: 0deg; } 40%, 60% { rotate: 14deg; translate: 2% 6%; } }
+@keyframes kc-nod-sway { 0%, 100% { rotate: 0deg; } 25% { rotate: 6deg; translate: 0 4%; } 50% { rotate: -6deg; } 75% { rotate: 6deg; translate: 0 4%; } }
+@keyframes kc-nod-happy { 0%, 100% { translate: 0 0; scale: 1; } 30% { translate: 0 5%; scale: 1.04 .96; } 60% { translate: 0 -6%; scale: .98 1.04; } }
+@keyframes kc-hmm-sway { 0%, 100% { rotate: 0deg; translate: 0 0; } 50% { rotate: -5deg; translate: 3% 0; } }
+@keyframes kc-hmm-tap { 0%, 100% { translate: 0 0; } 25% { translate: 0 -3%; } 50% { translate: 0 0; } 75% { translate: 0 -3%; } }
+@keyframes kc-hmm-tilt { 0%, 100% { rotate: 0deg; } 30%, 70% { rotate: -12deg; } }
+@keyframes kc-hmm-squint { 0%, 100% { scale: 1; } 40%, 60% { scale: 1.04 .92; translate: 0 4%; } }
+@keyframes kc-hmm-step { 0%, 100% { translate: 0 0; } 30% { translate: 8% 0; } 60% { translate: 8% 0; rotate: -6deg; } }
+@keyframes kc-probe-approach { 0%, 100% { translate: 0 0; rotate: 0deg; } 35%, 65% { translate: -38% -2%; rotate: -8deg; } 45% { rotate: -4deg; } 55% { rotate: -10deg; } }
+@keyframes kc-probe-peer { 0%, 100% { translate: 0 0; rotate: 0deg; } 40%, 70% { translate: -12% 3%; rotate: -14deg; } }
+@keyframes kc-probe-scan { 0%, 100% { translate: -6% 0; } 50% { translate: 6% -2%; } }
+@keyframes kc-probe-zoom { 0%, 100% { scale: 1; translate: 0 0; } 40%, 70% { scale: 1.18; translate: -10% -4%; } }
+@keyframes kc-probe-circle { 0% { translate: 0 0; } 25% { translate: -8% -6%; } 50% { translate: -16% 0; } 75% { translate: -8% 6%; } 100% { translate: 0 0; } }
+@keyframes kc-shake-head { 0%, 100% { rotate: 0deg; } 15%, 55% { rotate: -9deg; } 35%, 75% { rotate: 9deg; } }
+@keyframes kc-shake-slow { 0%, 100% { rotate: 0deg; } 25% { rotate: -7deg; } 75% { rotate: 7deg; } }
+@keyframes kc-shake-sigh { 0%, 100% { scale: 1; translate: 0 0; rotate: 0deg; } 20% { rotate: -7deg; } 40% { rotate: 7deg; scale: 1.03 1.06; translate: 0 -3%; } 60% { rotate: -5deg; } 80% { rotate: 0deg; scale: 1.04 .94; translate: 0 4%; } }
+@keyframes kc-shake-shrug { 0%, 100% { translate: 0 0; scale: 1; rotate: 0deg; } 20% { translate: 0 -6%; scale: 1.06 .96; rotate: -8deg; } 40% { rotate: 8deg; } 60% { rotate: -6deg; translate: 0 -6%; } 80% { rotate: 0deg; translate: 0 0; scale: 1; } }
+@keyframes kc-shake-jot { 0%, 100% { rotate: 0deg; translate: 0 0; } 15% { rotate: -8deg; } 30% { rotate: 8deg; } 45% { rotate: -6deg; } 60% { rotate: 0deg; translate: 0 4%; } 75% { translate: 0 0; } }
+.decision-actions { display: flex; gap: 8px; margin-top: 12px; }
+.decision-actions > * { flex: 1; margin: 0 !important; width: auto !important; }
+@media (max-width: 480px) { .decision-actions { flex-direction: column; } }
+
+/* 가끔 잠깐 돌아다니기: 몇 걸음 갔다가 돌아서서 제자리로 */
+.kc-walk-pro { --kk-motion: kc-walk-pro; --kk-dur: 2.6s; }
+.kc-walk-con { --kk-motion: kc-walk-con; --kk-dur: 2.6s; }
+@keyframes kc-walk-pro { 0%, 100% { translate: 0 0; scale: 1 1; } 10% { translate: 6% -4%; } 20% { translate: 12% 0; } 30% { translate: 18% -4%; } 45% { translate: 24% 0; scale: 1 1; } 50% { translate: 24% 0; scale: -1 1; } 60% { translate: 18% -4%; scale: -1 1; } 70% { translate: 12% 0; scale: -1 1; } 80% { translate: 6% -4%; scale: -1 1; } 95% { translate: 0 0; scale: -1 1; } }
+@keyframes kc-walk-con { 0%, 100% { translate: 0 0; scale: 1 1; } 10% { translate: -6% -4%; } 20% { translate: -12% 0; } 30% { translate: -18% -4%; } 45% { translate: -24% 0; scale: 1 1; } 50% { translate: -24% 0; scale: -1 1; } 60% { translate: -18% -4%; scale: -1 1; } 70% { translate: -12% 0; scale: -1 1; } 80% { translate: -6% -4%; scale: -1 1; } 95% { translate: 0 0; scale: -1 1; } }
+/* 답을 고를 때마다 판깡이가 아래에서 쏙 나왔다가 들어간다 */
+.stage .actor-guide { left: 50%; bottom: 4%; width: 14%; margin-left: -7%; animation: guide-pop 2.6s ease-in-out both; }
+.actor-guide .actor-emote { color: var(--accent); }
+@keyframes guide-pop { 0% { transform: translateY(70%); opacity: 0; } 15% { transform: translateY(-8%); opacity: 1; } 25% { transform: translateY(0); } 50% { transform: translateY(0) rotate(-4deg); } 60% { transform: translateY(0) rotate(4deg); } 80% { transform: translateY(0); opacity: 1; } 100% { transform: translateY(70%); opacity: 0; } }

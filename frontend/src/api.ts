@@ -13,7 +13,7 @@ export class ApiError extends Error {
 const FIELD_MESSAGES: Record<keyof IntakeInput, string> = {
   category: '지원하는 제품군 중에서 골라 주세요.',
   product_text: '제품 정보를 입력해 주세요. (최대 5000자)',
-  reason: '구매 이유를 한 줄로 입력해 주세요. (최대 200자)',
+  reason: '구매 이유는 200자까지 쓸 수 있어요.',
   catalog_model: '목록에서 제품 모델을 선택해 주세요.',
 }
 
@@ -35,6 +35,7 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
     }
     throw new ApiError('입력값을 확인해 주세요.', fields)
   }
+  if (res.status === 429) throw new ApiError('요청이 너무 잦아요. 1분쯤 뒤에 다시 시도해 주세요. 입력한 내용은 그대로 있어요.')
   if (!res.ok) throw new ApiError('요청을 처리하지 못했어요. 입력한 내용은 그대로 있어요. 다시 시도해 주세요.')
   return res.json()
 }

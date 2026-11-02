@@ -1,11 +1,13 @@
 import os
+from pathlib import Path
 
-from fastapi import FastAPI, HTTPException
+from fastapi import Depends, FastAPI, HTTPException, Request
 
-from app.gemini import GeminiError, generate_json
+from app.gemini import GeminiError, calls_left, generate_json
 from app.hearing import MOCK_ANSWERS, Hearing, HearingError, HearingRequest, check_scene, live_hearing, mock_hearing
 from app.intake import EXAMPLE, Category, IntakeRequest, Product, build_product
-from app.catalog import CatalogSummary, load_catalog
+from app.catalog import CatalogSummary, load_catalog, with_variants
+from app.rate_limit import limit
 
 app = FastAPI(title="살깡말깡 API")
 
@@ -18,11 +20,12 @@ def current_mode() -> str:
 
 
 @app.get("/api/health")
-def health() -> dict[str, str]:
-    return {"status": "ok", "mode": current_mode()}
+def health() -> dict[str, str | int]:
+    mode = current_mode()
+    return {"status": "ok", "mode": mode, **({"ai_calls_left": calls_left()} if mode == "live" else {})}
 
 
-@app.post("/api/intake")
+@app.post("/api/intake", dependencies=[Depends(limit)])
 def intake(req: IntakeRequest) -> Product:
     try:
         # shortcut: AI 사양 검색(spec_finder)은 무료 등급에서 Google 검색 도구가 429로 막혀 꺼 둔다.
@@ -34,7 +37,7 @@ def intake(req: IntakeRequest) -> Product:
 
 @app.get("/api/catalog", response_model=list[CatalogSummary])
 def catalog(category: Category | None = None):
-    return [p for p in load_catalog() if category is None or p.category == category.value]
+    return with_variants([p for p in load_catalog() if category is None or p.category == category.value])
 
 
 @app.get("/api/example")
@@ -43,10 +46,11 @@ def example() -> Product:
 
 
 @app.post("/api/hearing")
-def hearing(req: HearingRequest) -> Hearing:
+def hearing(req: HearingRequest, request: Request) -> Hearing:
     try:
         check_scene(req)
         if current_mode() == "live":
+            limit(request)  # 비용이 드는 실제 AI 호출만 제한한다. 예시 모드는 서버 안에서 끝나 제한하지 않음
             try:
                 return live_hearing(req, generate_json)
             except GeminiError as e:
@@ -56,3 +60,9 @@ def hearing(req: HearingRequest) -> Hearing:
         return mock_hearing(req)
     except HearingError as e:
         raise HTTPException(status_code=422, detail=str(e))
+
+
+if os.getenv("SERVE_FRONTEND") == "1":
+    from app.frontend import mount_frontend
+
+    mount_frontend(app, Path(__file__).resolve().parents[2] / "frontend" / "dist")
