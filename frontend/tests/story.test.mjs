@@ -42,3 +42,13 @@ test('깡이 장면 동작 30개가 모두 다르고 CSS에 실제 동작이 있
   assert.match(castStep('pro', 'close', 0).motion, /^kc-nod-/)     // 마무리 끄덕끄덕
   assert.notEqual(castStep('pro', 'show', 0).motion, castStep('pro', 'show', 1).motion)  // 반복마다 다르게
 })
+
+test('답 직후 반응은 주장 상태로만 고르고, 답이 없으면 반응하지 않는다', async () => {
+  const { answerReaction } = await import('../src/story.ts')
+  const c = (side, status = 'kept') => ({ id: side + status, side, status, evidence_ids: [] })
+  assert.equal(answerReaction(null, [c('con')]), null)
+  assert.equal(answerReaction('skip', []).con.emote, '?')
+  assert.equal(answerReaction('ok', [c('pro'), c('con', 'revised')]).con.pose, 'con_relieved')  // 말깡이가 인정
+  assert.equal(answerReaction('no', [c('pro', 'revised'), c('con')]).pro.pose, 'pro_think')      // 살깡이가 범위를 좁힘
+  assert.equal(answerReaction('no', [c('pro'), c('con'), c('con')]).con.pose, 'con_question')   // 말깡이가 덧붙임
+})

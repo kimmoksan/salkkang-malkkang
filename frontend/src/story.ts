@@ -73,3 +73,31 @@ export function castStep(side: 'pro' | 'con', phase: CastPhase, n: number) {
   const list = CAST_MOTIONS[side][phase]
   return { pose: CAST_POSE[side][phase] as KkangPose, motion: `kc-${list[n % list.length]}`, emote: CAST_EMOTE[side][phase] }
 }
+
+// 가끔(세 번에 한 번) 잠깐 돌아다니기. 살깡이는 오른쪽으로, 말깡이는 왼쪽으로 몇 걸음 갔다가 돌아온다.
+export const CAST_WALK = {
+  pro: { pose: 'pro_wave' as KkangPose, motion: 'kc-walk-pro', emote: '♪' },
+  con: { pose: 'con_curious' as KkangPose, motion: 'kc-walk-con', emote: '…' },
+}
+
+type Step = { pose: KkangPose; motion: string; emote: string }
+// 답을 고른 직후 잠깐(약 2.5초) 보이는 반응. 주장 상태만 보고 표정을 고르며, 판정·추천을 뜻하지 않는다.
+export function answerReaction(answered: string | null, claims: Claim[]): { pro: Step; con: Step } | null {
+  if (!answered) return null
+  if (answered === 'skip') return {
+    pro: { pose: 'pro_wave', motion: 'kc-nod-sway', emote: '' },
+    con: { pose: 'con_curious', motion: 'kc-hmm-tilt', emote: '?' },
+  }
+  if (claims.some((c) => c.side === 'con' && c.status !== 'kept')) return {
+    pro: { pose: 'pro_excited', motion: 'kc-joy-cheer', emote: '✦' },
+    con: { pose: 'con_relieved', motion: 'kc-joy-hop', emote: '✓' },
+  }
+  if (claims.some((c) => c.side === 'pro' && c.status !== 'kept')) return {
+    pro: { pose: 'pro_think', motion: 'kc-hmm-tilt', emote: '…' },
+    con: { pose: 'con_note', motion: 'kc-nod-slow', emote: '✎' },
+  }
+  return {
+    pro: { pose: 'pro_think', motion: 'kk-tilt', emote: '…' },
+    con: { pose: 'con_question', motion: 'kk-raise', emote: '!' },
+  }
+}

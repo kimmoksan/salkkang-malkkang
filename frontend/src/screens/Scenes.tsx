@@ -41,7 +41,7 @@ export default function Scenes({ product, onBack, onFinish, hearings, bases, ans
           <h1 ref={heading} tabIndex={-1}>{story.title}</h1> <span className="tag outline scene-note">사용 상황 예시 · AI 구성 아님</span>
         </header>
         <div className="living-player">
-          <Stage scene={scene} paused={paused || !active} cast={{ claim: focus, evidence: hearing?.evidence ?? [] }} />
+          <Stage scene={scene} paused={paused || !active} cast={{ claim: focus, evidence: hearing?.evidence ?? [], claims: hearing?.claims ?? [], answered: hearing?.answered ?? null }} />
           <div className="player-bar">
             <button type="button" className="secondary small" aria-pressed={paused} onClick={() => setPaused(!paused)}>{paused ? '움직임 다시 보기' : '움직임 멈추기'}</button>
             <p className="caption">{story.action}</p>

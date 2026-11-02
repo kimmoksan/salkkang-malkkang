@@ -577,8 +577,8 @@ button:disabled { opacity: 0.6; cursor: wait; }
 .conversation .story-next .kkang { width: 40px; flex-basis: 40px; }
 
 /* 장면 속 깡이: 양옆에서 걸어 들어오고, 머리 위에 감정 표시가 떠오른다. */
-.stage .actor-pro { animation: actor-in-left .7s ease-out both, var(--kk-motion, kkang-bob) var(--kk-dur, 2.6s) ease-in-out 1.9s infinite; }
-.stage .actor-con { animation: actor-in-right .7s ease-out .15s both, var(--kk-motion, kkang-bob) var(--kk-dur, 2.6s) ease-in-out 2.1s infinite; }
+.stage .actor-pro { animation: actor-in-left .7s ease-out both, var(--kk-motion, kkang-bob) var(--kk-dur, 2.6s) ease-in-out .6s infinite; }
+.stage .actor-con { animation: actor-in-right .7s ease-out .15s both, var(--kk-motion, kkang-bob) var(--kk-dur, 2.6s) ease-in-out .75s infinite; }
 @keyframes actor-in-left { from { translate: -60% 0; opacity: 0; } to { translate: 0 0; opacity: 1; } }
 @keyframes actor-in-right { from { translate: 60% 0; opacity: 0; } to { translate: 0 0; opacity: 1; } }
 .actor-emote { position: absolute; left: 50%; top: -14%; translate: -50% 0; font: 700 clamp(12px, 1.6vw, 20px)/1 system-ui, sans-serif; color: #fff; text-shadow: 0 0 0 #000, 2px 2px 0 #1a1236; pointer-events: none; animation: emote-float 2.4s ease-in-out .9s infinite both; }
@@ -651,3 +651,13 @@ button:disabled { opacity: 0.6; cursor: wait; }
 .decision-actions { display: flex; gap: 8px; margin-top: 12px; }
 .decision-actions > * { flex: 1; margin: 0 !important; width: auto !important; }
 @media (max-width: 480px) { .decision-actions { flex-direction: column; } }
+
+/* 가끔 잠깐 돌아다니기: 몇 걸음 갔다가 돌아서서 제자리로 */
+.kc-walk-pro { --kk-motion: kc-walk-pro; --kk-dur: 2.6s; }
+.kc-walk-con { --kk-motion: kc-walk-con; --kk-dur: 2.6s; }
+@keyframes kc-walk-pro { 0%, 100% { translate: 0 0; scale: 1 1; } 10% { translate: 6% -4%; } 20% { translate: 12% 0; } 30% { translate: 18% -4%; } 45% { translate: 24% 0; scale: 1 1; } 50% { translate: 24% 0; scale: -1 1; } 60% { translate: 18% -4%; scale: -1 1; } 70% { translate: 12% 0; scale: -1 1; } 80% { translate: 6% -4%; scale: -1 1; } 95% { translate: 0 0; scale: -1 1; } }
+@keyframes kc-walk-con { 0%, 100% { translate: 0 0; scale: 1 1; } 10% { translate: -6% -4%; } 20% { translate: -12% 0; } 30% { translate: -18% -4%; } 45% { translate: -24% 0; scale: 1 1; } 50% { translate: -24% 0; scale: -1 1; } 60% { translate: -18% -4%; scale: -1 1; } 70% { translate: -12% 0; scale: -1 1; } 80% { translate: -6% -4%; scale: -1 1; } 95% { translate: 0 0; scale: -1 1; } }
+/* 답을 고를 때마다 판깡이가 아래에서 쏙 나왔다가 들어간다 */
+.stage .actor-guide { left: 50%; bottom: 4%; width: 14%; margin-left: -7%; animation: guide-pop 2.6s ease-in-out both; }
+.actor-guide .actor-emote { color: var(--accent); }
+@keyframes guide-pop { 0% { transform: translateY(70%); opacity: 0; } 15% { transform: translateY(-8%); opacity: 1; } 25% { transform: translateY(0); } 50% { transform: translateY(0) rotate(-4deg); } 60% { transform: translateY(0) rotate(4deg); } 80% { transform: translateY(0); opacity: 1; } 100% { transform: translateY(70%); opacity: 0; } }
