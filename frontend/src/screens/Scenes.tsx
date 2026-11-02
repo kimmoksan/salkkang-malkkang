@@ -34,13 +34,12 @@ export default function Scenes({ product, onBack, onFinish, hearings, bases, ans
   useEffect(() => { if (active) heading.current?.focus({ preventScroll: true }) }, [index, active])
 
   return <section className="scenes living-hearing">
-    <header className="story-header">
-      <div><p className="eyebrow">{product.name} · 우리 집에서 써본다면</p>
-        <h1 ref={heading} tabIndex={-1}>{story.title}</h1></div>
-      <span className="tag outline">사용 상황 예시 · AI 구성 아님</span>
-    </header>
     <div className="living-layout">
       <div className="living-stage-column">
+        <header className="story-header">
+          <p className="eyebrow">{product.name} · 우리 집에서 써본다면</p>
+          <h1 ref={heading} tabIndex={-1}>{story.title}</h1> <span className="tag outline scene-note">사용 상황 예시 · AI 구성 아님</span>
+        </header>
         <div className="living-player">
           <Stage scene={scene} paused={paused || !active} cast={{ claim: focus, evidence: hearing?.evidence ?? [] }} />
           <div className="player-bar">
@@ -50,13 +49,6 @@ export default function Scenes({ product, onBack, onFinish, hearings, bases, ans
           <nav className="story-trail" aria-label="사용 상황 돌아보기">
             {scenes.map((s, i) => <button key={s.id} type="button" disabled={updatingAnswer} aria-current={i === index ? 'step' : undefined} onClick={() => onIndexChange(i)}>{SCENE_STORY[s.id].short}</button>)}
           </nav>
-          <p className="muted small story-hint">대화를 읽은 뒤, 다음 상황으로 함께 가요. 자동으로 넘어가지 않아요.</p>
-          <div className="story-next">
-            <div className="guide-line"><Kkang pose="guide_present" size="sm" /><p><strong>판깡이</strong><br />{story.bridge}</p></div>
-            <button type="button" className="primary" disabled={updatingAnswer} onClick={index < scenes.length - 1 ? () => onIndexChange(index + 1) : onFinish}>{story.next} →</button>
-            {updatingAnswer && <p className="muted small" role="status">네 답을 반영하고 있어. 잠시만 기다려 줘.</p>}
-            {!hearing && !updatingAnswer && <p className="muted small">지금 넘어가면 이 장면은 ‘확인 안 함’으로 남아요.</p>}
-          </div>
         </div>
         <details className="card scene-context">
           <summary>장면 설명과 가정 살펴보기</summary>
@@ -70,6 +62,12 @@ export default function Scenes({ product, onBack, onFinish, hearings, bases, ans
       <section className="conversation card" aria-label="청문회 대화">
         <div className="conversation-heading"><h2>같이 따져보자</h2><span className="muted small">이 장면의 이야기</span></div>
         <HearingPanel key={scene.id} product={product} sceneId={scene.id} answer={answer} cached={hearings[scene.id]} base={bases[scene.id]} onLoaded={onHearing} onAnswer={(a) => onAnswer(scene.id, a)} onFocus={(claim) => setSelected({ scene: scene.id, claim })} />
+        <div className="story-next">
+          <div className="guide-line"><Kkang pose="guide_present" size="sm" /><p><strong>판깡이</strong><br />{story.bridge}</p></div>
+          <button type="button" className="primary" disabled={updatingAnswer} onClick={index < scenes.length - 1 ? () => onIndexChange(index + 1) : onFinish}>{story.next} →</button>
+          {updatingAnswer && <p className="muted small" role="status">네 답을 반영하고 있어. 잠시만 기다려 줘.</p>}
+          {!hearing && !updatingAnswer && <p className="muted small">지금 넘어가면 이 장면은 ‘확인 안 함’으로 남아요.</p>}
+        </div>
       </section>
     </div>
     <div className="row between nav-row"><button type="button" className="link" onClick={onBack}>← 제품 확인</button><button type="button" className="link small" disabled={updatingAnswer} onClick={onFinish}>지금까지 본 내용 정리하기</button></div>
