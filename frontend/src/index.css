@@ -588,3 +588,6 @@ button:disabled { opacity: 0.6; cursor: wait; }
 @keyframes emote-float { 0% { opacity: 0; translate: -50% 20%; scale: .6; } 15% { opacity: 1; translate: -50% 0; scale: 1.1; } 25% { scale: 1; } 70% { opacity: 1; translate: -50% -15%; } 90%, 100% { opacity: 0; translate: -50% -25%; } }
 .stage .con-object { left: -6%; right: auto; width: 34%; animation: con-object-look 2.6s ease-in-out 1s infinite both; }
 @keyframes con-object-look { 0%, 100% { rotate: 0deg; translate: 0 0; } 30% { rotate: -10deg; translate: -4% -6%; } 60% { rotate: 6deg; translate: 0 -3%; } }
+/* 소품이 발밑 점처럼 보이지 않게: 손 높이에서 몸통의 절반 가까이 크기로 든다 */
+.stage .actor-object { width: 48%; right: -8%; bottom: 14%; }
+.stage .con-object { left: -26%; right: auto; bottom: 26%; width: 48%; }
