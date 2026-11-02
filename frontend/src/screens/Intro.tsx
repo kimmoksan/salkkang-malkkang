@@ -108,7 +108,7 @@ export default function Intro({ input, onChange, onSubmit, onExample, busy, erro
             onChange={(e) => change({ ...input, catalog_model: e.target.value || undefined })}>
             <option value="">제품 모델을 선택해 주세요</option>
             {products.filter((p) => p.brand === selectedBrand).map((p) => (
-              <option key={p.model} value={p.model}>{p.name} · {p.model}{p.status === '단종' ? ' (단종)' : ''}</option>
+              <option key={p.model} value={p.model}>{p.name}{p.variant ? ` [${p.variant}]` : ''} · {p.model}{p.status === '단종' ? ' (단종)' : ''}</option>
             ))}
           </select>
           <p id="catalog_model_err" className="field-error">{shown.catalog_model}</p>

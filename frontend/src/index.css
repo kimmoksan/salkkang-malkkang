@@ -575,3 +575,16 @@ button:disabled { opacity: 0.6; cursor: wait; }
 .conversation .question { padding: 12px 14px; margin-top: 8px; }
 .conversation .story-next { margin: 10px 0 0; padding-top: 10px; }
 .conversation .story-next .kkang { width: 40px; flex-basis: 40px; }
+
+/* 장면 속 깡이: 양옆에서 걸어 들어오고, 머리 위에 감정 표시가 떠오른다. 말깡이도 살펴보는 소품을 든다. */
+.stage .actor-pro { animation: actor-in-left .7s ease-out both, var(--kk-motion, kkang-bob) var(--kk-dur, 2.6s) ease-in-out 1.9s infinite; }
+.stage .actor-con { animation: actor-in-right .7s ease-out .15s both, var(--kk-motion, kkang-bob) var(--kk-dur, 2.6s) ease-in-out 2.1s infinite; }
+@keyframes actor-in-left { from { translate: -60% 0; opacity: 0; } to { translate: 0 0; opacity: 1; } }
+@keyframes actor-in-right { from { translate: 60% 0; opacity: 0; } to { translate: 0 0; opacity: 1; } }
+.actor-emote { position: absolute; left: 50%; top: -14%; translate: -50% 0; font: 700 clamp(12px, 1.6vw, 20px)/1 system-ui, sans-serif; color: #fff; text-shadow: 0 0 0 #000, 2px 2px 0 #1a1236; pointer-events: none; animation: emote-float 2.4s ease-in-out .9s infinite both; }
+.actor-pro .actor-emote { color: var(--pro); }
+.actor-con .actor-emote { color: var(--con); }
+.actor-emote:empty { display: none; }
+@keyframes emote-float { 0% { opacity: 0; translate: -50% 20%; scale: .6; } 15% { opacity: 1; translate: -50% 0; scale: 1.1; } 25% { scale: 1; } 70% { opacity: 1; translate: -50% -15%; } 90%, 100% { opacity: 0; translate: -50% -25%; } }
+.stage .con-object { left: -6%; right: auto; width: 34%; animation: con-object-look 2.6s ease-in-out 1s infinite both; }
+@keyframes con-object-look { 0%, 100% { rotate: 0deg; translate: 0 0; } 30% { rotate: -10deg; translate: -4% -6%; } 60% { rotate: 6deg; translate: 0 -3%; } }

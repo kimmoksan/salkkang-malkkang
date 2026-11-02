@@ -6,7 +6,7 @@ from fastapi import Depends, FastAPI, HTTPException
 from app.gemini import GeminiError, generate_json
 from app.hearing import MOCK_ANSWERS, Hearing, HearingError, HearingRequest, check_scene, live_hearing, mock_hearing
 from app.intake import EXAMPLE, Category, IntakeRequest, Product, build_product
-from app.catalog import CatalogSummary, load_catalog
+from app.catalog import CatalogSummary, load_catalog, with_variants
 from app.rate_limit import limit
 
 app = FastAPI(title="살깡말깡 API")
@@ -36,7 +36,7 @@ def intake(req: IntakeRequest) -> Product:
 
 @app.get("/api/catalog", response_model=list[CatalogSummary])
 def catalog(category: Category | None = None):
-    return [p for p in load_catalog() if category is None or p.category == category.value]
+    return with_variants([p for p in load_catalog() if category is None or p.category == category.value])
 
 
 @app.get("/api/example")

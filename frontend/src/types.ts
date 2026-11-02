@@ -7,7 +7,7 @@ export const CATEGORIES: { id: Category; label: string }[] = [
   { id: 'air_purifier', label: '공기청정기' },
 ]
 
-export type CatalogProduct = { brand: string; model: string; name: string; url: string; status: string }
+export type CatalogProduct = { brand: string; model: string; name: string; url: string; status: string; variant?: string | null }
 export type IntakeInput = { category: Category; product_text: string; reason: string; catalog_model?: string }
 
 export type Spec = {
