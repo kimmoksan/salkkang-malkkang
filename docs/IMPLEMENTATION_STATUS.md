@@ -2,6 +2,8 @@
 
 ## 생활 무대·청문회 통합과 결과 화면 (2026-11-02)
 
+- 후속 배치 조정: 판깡이 안내와 다음 상황 버튼을 애니메이션 카드 하단으로 옮겼다. 데스크톱 실제 화면에서 같은 카드 안의 배치를 확인했고 lint·타입·빌드·diff 검사를 통과했다. 모바일에서는 안내 아래에 버튼을 넓게 배치하며, 이전에 남긴 모바일 전체 점검 한계는 유지한다.
+
 - [PR #33](https://github.com/kimmoksan/salkkang-malkkang/pull/33)을 develop 대상으로 초안 생성했다. 구현 커밋 `2d64ad8`의 [CI #65](https://github.com/kimmoksan/salkkang-malkkang/actions/runs/41388789030)는 성공했다. 시각 검증이 남아 있으며 머지하지 않았다.
 
 - `origin/develop`의 `f6043e8`에서 `codex/living-hearing`을 분리했다. 카탈로그 브랜치와 열린 기존 PR은 변경하지 않았다.

@@ -451,12 +451,14 @@ button:disabled { opacity: 0.6; cursor: wait; }
 .question-body { min-width: 0; line-height: 1.65; }
 .question-body .row { margin: 8px 0; }
 .question-body button { text-align: left; line-height: 1.5; }
-.story-next { margin-top: 24px; padding-top: 18px; border-top: 1px solid var(--line); }
+.story-next { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 20px; margin: 16px 8px 8px; padding-top: 16px; border-top: 1px solid var(--line); }
+.story-next .guide-line { flex: 1 1 240px; min-width: 0; margin-bottom: 0; }
+.story-next > p { flex-basis: 100%; margin: 0; }
 .guide-line { display: flex; gap: 12px; align-items: center; line-height: 1.6; margin-bottom: 16px; }
 .guide-line p { font-size: .875rem; margin: 0; }
 .guide-line strong { color: var(--accent); }
 .guide-line .kkang { width: 48px; flex: 0 0 48px; animation: none; }
-.story-next > .primary { width: 100%; border-radius: 12px; }
+.story-next > .primary { flex: 0 1 auto; max-width: 100%; border-radius: 12px; }
 .conversation .hearing-loading { min-height: 180px; }
 .conversation .hearing-loading .kkang { width: 48px; animation: none; }
 /* 동작은 장면 진입 때 한 번. 말하는 표정은 근거를 펼칠 때 교체된다. */
@@ -508,6 +510,7 @@ button:disabled { opacity: 0.6; cursor: wait; }
   .story-header h1 { font-size: 1.4rem; }
   .chat-claim .bubble { padding: 14px; }
   .story-trail button { font-size: .75rem; }
+  .story-next > .primary { width: 100%; }
   .story-header .eyebrow { overflow-wrap: anywhere; }
 }
 @media (prefers-reduced-motion: reduce) { .stage-cast * { animation: none !important; } }
