@@ -99,7 +99,9 @@ main:has(> .intro), main:has(> .hero) {
 }
 
 /* 인트로 히어로: 문구는 코드로, 그림은 글자 없는 일러스트 */
-.hero h1, .hero .eyebrow, .hero-cta, .hero-bubble { font-family: 'Jua', system-ui, sans-serif; font-weight: 400; }
+/* 여기어때 잘난체(무료·상업 이용 가능). shortcut: 히어로 문구 글자만 남긴 11KB 파일이라 문구를 바꾸면 frontend/public/fonts를 다시 만든다 */
+@font-face { font-family: 'Jalnan'; src: url('/fonts/jalnan-hero.woff2') format('woff2'); font-display: swap; }
+.hero h1, .hero .eyebrow, .hero-cta, .hero-bubble { font-family: 'Jalnan', system-ui, sans-serif; font-weight: 400; }
 .hero {
   display: grid;
   grid-template-columns: minmax(300px, 520px) minmax(0, 1fr);
@@ -154,10 +156,10 @@ main:has(> .intro), main:has(> .hero) {
   .hero h1 {
     /* 번지는 큰 그림자 대신 얇은 어두운 테두리로 그림 위에서도 또렷하게 */
     text-shadow: 0 2px 6px rgb(18 18 42 / 0.75);
-    font-size: clamp(2.25rem, 4.6vw, 4.875rem); line-height: 1.12; letter-spacing: -0.02em;
+    font-size: clamp(2.125rem, 4.2vw, 4.5rem); line-height: 1.12; letter-spacing: -0.03em;
     color: #fbf7ef; white-space: nowrap; margin: 0 0 2.4vw;
   }
-  .hero-shout { display: inline-block; font-size: 1.6em; color: #b8a2f7; margin-bottom: -0.1em; }
+  .hero-shout { display: inline-block; font-size: 1.75em; color: #b8a2f7; margin-bottom: -0.1em; }
   .hero-lead { font-size: clamp(1rem, 1.5vw, 1.625rem); line-height: 1.65; color: #ddd8ee; opacity: 1; margin: 0 0 3.4vw 0.3vw; }
   .primary.hero-cta {
     width: clamp(280px, 27vw, 460px); padding: 0; height: clamp(56px, 5.2vw, 88px);
