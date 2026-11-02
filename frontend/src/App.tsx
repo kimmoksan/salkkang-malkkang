@@ -99,7 +99,7 @@ export default function App() {
         </nav>
         {health && <span className="badge">{MODE_LABEL[health.mode]}</span>}
       </header>
-      <main>
+      <main className={product && started ? 'review-main' : undefined}>
         {product && started ? (
           <>
             <div hidden={finished}>

@@ -1,7 +1,7 @@
-import { useEffect, useState, type ReactNode } from 'react'
+import { useEffect, useState } from 'react'
 import { ApiError, fetchHearing } from '../api'
-import Kkang, { type KkangPose } from '../components/Kkang'
-import type { Claim, Evidence, EvidenceKind, Hearing, Product } from '../types'
+import Kkang from '../components/Kkang'
+import type { EvidenceKind, Hearing, Product } from '../types'
 
 type Props = {
   product: Product
@@ -11,7 +11,7 @@ type Props = {
   cached?: Hearing
   base?: Hearing
   onLoaded: (hearing: Hearing) => void
-  top?: ReactNode
+  onFocus: (claimId: string) => void
 }
 
 const KIND_LABEL: Record<EvidenceKind, string> = {
@@ -27,9 +27,8 @@ const SIDE = {
 }
 const STATUS = { revised: '주장 수정', withdrawn: '주장 철회' }
 
-export default function HearingPanel({ product, sceneId, answer, onAnswer, cached, base, onLoaded, top }: Props) {
+export default function HearingPanel({ product, sceneId, answer, onAnswer, cached, base, onLoaded, onFocus }: Props) {
   const [response, setResponse] = useState<{ answer: string | null; hearing?: Hearing; error?: string } | null>(null)
-  const [selected, setSelected] = useState<string | null>(null)
   const [retry, setRetry] = useState(0)
 
   useEffect(() => {
@@ -68,125 +67,47 @@ export default function HearingPanel({ product, sceneId, answer, onAnswer, cache
   if (!hearing) return (
     <div className="hearing-loading" role="status">
       <Kkang pose="guide_moderate" />
-      <p className="muted">판깡이가 공방을 준비하고 있어요…</p>
+      <p className="muted">판깡이가 이야기를 모으고 있어요. 잠시만요!</p>
     </div>
   )
 
   const claimById = new Map(hearing.claims.map((c) => [c.id, c]))
-  const focus = claimById.get(selected ?? '') ?? hearing.claims[0]
-  const changed = hearing.claims.filter((c) => c.status !== 'kept')
-
-  return (
-    <div className="hearing-grid">
-      <div className="debate">
-        {top}
-        {hearing.mode === 'mock' && <p className="tag outline mode-tag">예시 공방 · 실제 AI 응답 아님</p>}
-        {hearing.mode === 'live' && <p className="tag outline mode-tag">AI 공방 · 근거를 직접 확인하세요</p>}
-        {hearing.notice && <p className="muted small" role="status">{hearing.notice}</p>}
-        <p className="muted small cast">
-          <strong>{SIDE.pro.label}</strong>(찬성) {SIDE.pro.intro} · <strong>{SIDE.con.label}</strong>(반대) {SIDE.con.intro} · <strong>판깡이</strong>(진행) 필요할 때만 물어봐요
-        </p>
-        <ol className="claims">
-          {hearing.claims.map((c) => (
-            <ClaimRow
-              key={c.id}
-              claim={c}
-              repliesTo={c.replies_to ? claimById.get(c.replies_to) : undefined}
-              evidence={hearing.evidence}
-              active={c.id === focus.id}
-              onSelect={() => setSelected(c.id)}
-            />
-          ))}
-        </ol>
-
-        {hearing.question && (
-          <div className="question card">
-            <figure className="speaker">
-              <Kkang pose={hearing.answered ? 'guide_listen' : 'guide_present'} size="sm" />
-              <figcaption className="tag outline small">판깡이</figcaption>
-            </figure>
-            <div className="question-body">
-              <p id="q-text"><strong>{hearing.question.text}</strong> <span className="muted small">(선택 · 건너뛰어도 돼요)</span></p>
-              <div className="row" role="group" aria-labelledby="q-text">
-                {[...hearing.question.options, { id: 'skip', label: '건너뛰기' }].map((o) => (
-                  <button
-                    key={o.id}
-                    type="button"
-                    className={hearing.answered === o.id ? 'primary small' : 'secondary small'}
-                    aria-pressed={hearing.answered === o.id}
-                    onClick={() => onAnswer(o.id)}
-                  >
-                    {o.label}
-                  </button>
-                ))}
-              </div>
-            </div>
+  return <div className="hearing-thread">
+    <p className="tag outline mode-tag">{hearing.mode === 'mock' ? '예시 공방 · 실제 AI 응답 아님' : 'AI 공방 · 근거를 직접 확인하세요'}</p>
+    {hearing.notice && <p className="muted small" role="status">{hearing.notice}</p>}
+    <ol className="claims chat-claims">
+      {hearing.claims.map((c) => {
+        const repliesTo = c.replies_to ? claimById.get(c.replies_to) : undefined
+        return <li key={c.id} className={`chat-claim side-${c.side}`}>
+          <div className="chat-speaker"><strong><span aria-hidden="true">●</span> {SIDE[c.side].label}</strong><span className="muted small">{SIDE[c.side].role}</span></div>
+          <div className="bubble">
+            {repliesTo && <p className="muted small">↳ {SIDE[repliesTo.side].label}의 말에 덧붙여</p>}
+            <p>{c.text}</p>
+            {c.status !== 'kept' && <div className="claim-change"><strong>{STATUS[c.status]}</strong><p>{c.change_reason}</p></div>}
+            <details className="claim-evidence" onToggle={(event) => { if (event.currentTarget.open) onFocus(c.id) }}>
+              <summary>근거 {c.evidence_ids.length}개 살펴보기</summary>
+              <ul className="evidence-list">{c.evidence_ids.map((id) => {
+                const e = hearing.evidence.find((item) => item.id === id)
+                if (!e) return null
+                const source = product.sources.find((s) => s.id === e.source_id)
+                return <li key={id}><span className={`tag kind-${e.kind}`}>{KIND_LABEL[e.kind]}</span><p>{e.text}</p>
+                  {source?.url && <a className="url small" href={source.url} target="_blank" rel="noopener noreferrer">{source.kind === 'catalog' ? `제조사 공식 · 확인일 ${source.checked_at ?? '확인 필요'}` : '자료 출처 보기'} ↗</a>}
+                </li>
+              })}</ul>
+            </details>
           </div>
-        )}
-      </div>
-
-      <aside className="card evidence-panel" aria-live="polite">
-        <h2>근거 확인</h2>
-        <p className="muted small">선택한 주장의 근거와 조건이에요.</p>
-        <div className="focus">
-          <p className="tags"><span className={`tag side-${focus.side}`}>{SIDE[focus.side].label}({SIDE[focus.side].role})</span></p>
-          <p>“{focus.text}”</p>
+        </li>
+      })}
+    </ol>
+    {hearing.question && <div className="question card">
+      <div className="question-body">
+        <p className="eyebrow small">판깡이가 하나만 물어볼게</p>
+        <p id="q-text"><strong>{hearing.question.text}</strong></p>
+        <div className="row" role="group" aria-labelledby="q-text">
+          {[...hearing.question.options, { id: 'skip', label: '건너뛰기 · 확인 안 함' }].map((o) => <button key={o.id} type="button" className={hearing.answered === o.id ? 'primary small' : 'secondary small'} aria-pressed={hearing.answered === o.id} onClick={() => onAnswer(o.id)}>{o.label}</button>)}
         </div>
-        <ul className="evidence-list">
-          {focus.evidence_ids.map((id) => {
-            const e = hearing.evidence.find((x) => x.id === id)
-            if (!e) return null
-            return (
-              <li key={id}>
-                <span className={`tag kind-${e.kind}`}>{KIND_LABEL[e.kind]}</span>
-                <p>{e.text}</p>
-              </li>
-            )
-          })}
-        </ul>
-        {changed.map((c) => (
-          <div key={c.id} className="change card">
-            <strong>↻ {SIDE[c.side].label} {STATUS[c.status as 'revised' | 'withdrawn']}</strong>
-            <p className="small">{c.change_reason}</p>
-          </div>
-        ))}
-      </aside>
-    </div>
-  )
-}
-
-// 발언 상태에 맞는 포즈. 주장 수정·철회는 인정하는 표정, 미확인 근거를 짚을 땐 말깡이가 돋보기를 든다.
-function claimPose(claim: Claim, evidence: Evidence[]): KkangPose {
-  const unverified = claim.evidence_ids.some((id) => evidence.find((e) => e.id === id)?.kind === 'unverified')
-  if (claim.side === 'pro') {
-    if (claim.status === 'withdrawn') return 'pro_shy'
-    if (claim.status === 'revised') return 'pro_think'
-    return claim.replies_to ? 'pro_excited' : 'pro_present'
-  }
-  if (claim.status !== 'kept') return 'con_relieved'
-  if (claim.replies_to && claim.evidence_ids.some((id) => evidence.find((e) => e.id === id)?.kind === 'user_statement')) return 'con_note'
-  if (unverified) return 'con_inspect'
-  return claim.replies_to ? 'con_question' : 'con_curious'
-}
-
-function ClaimRow({ claim, repliesTo, evidence, active, onSelect }: { claim: Claim; repliesTo?: Claim; evidence: Evidence[]; active: boolean; onSelect: () => void }) {
-  const side = SIDE[claim.side]
-  return (
-    <li className={`claim side-${claim.side}`}>
-      <figure className="speaker">
-        <Kkang pose={claimPose(claim, evidence)} className="portrait-frame" />
-        <figcaption className={`tag side-${claim.side}`}>{side.label}</figcaption>
-      </figure>
-      <div className={`bubble ${active ? 'active' : ''}`}>
-        {repliesTo && <p className="muted small">↳ {SIDE[repliesTo.side].label} 말에 대한 반문</p>}
-        <p>
-          {claim.text}
-          {claim.status !== 'kept' && <span className="tag outline small status">{STATUS[claim.status]}</span>}
-        </p>
-        <button type="button" className="chip-btn" aria-pressed={active} onClick={onSelect}>
-          근거 {claim.evidence_ids.length}개 보기 ›
-        </button>
+        <p className="muted small" role="status">{hearing.answered === 'skip' ? '확인 안 함으로 남겨 뒀어. 나중에 답해도 괜찮아.' : hearing.answered ? '네 답을 반영했어. 바뀐 주장과 이유를 함께 살펴봐.' : '답하지 않고 다음으로 넘어가도 괜찮아.'}</p>
       </div>
-    </li>
-  )
+    </div>}
+  </div>
 }
