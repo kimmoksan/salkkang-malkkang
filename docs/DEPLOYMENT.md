@@ -48,3 +48,11 @@ uv run --no-sync python -m app.serve
 6. 프록시를 통과한 서로 다른 두 클라이언트의 요청 제한이 분리되는지 실제 호스팅에서 확인.
 
 외부 배포 URL·프록시 정보·호스팅 계정은 아직 정해지지 않았다. 위 항목의 실제 호스팅 검증을 완료했다고 간주하지 않는다.
+
+## Render 배포 (2026-11-02 선택)
+
+- 방식: Docker 단일 서비스(`Dockerfile`), 블루프린트 `render.yaml`(main 브랜치 자동 배포, 무료 플랜, 싱가포르, 헬스체크 `/api/health`).
+- 모드: 실제 AI(`APP_MODE=live`) + Gemini 무료 한도 + 소진·실패 시 예시 공방 대체. `GEMINI_API_KEY`는 Render 대시보드에서 사용자가 직접 입력(`sync: false`).
+- 프록시: Render 내부 사설망 `10.0.0.0/8`만 신뢰해 실제 사용자 IP로 요청 제한. 배포 후 서로 다른 두 기기로 제한 분리를 확인해야 함(미확인).
+- 로컬 확인: 이미지 대신 같은 명령(`SERVE_FRONTEND=1 HOST=127.0.0.1 PORT=8010 FORWARDED_ALLOW_IPS=10.0.0.0/8 python -m app.serve`)으로 `/`, `/api/health`, `/api/catalog`(54개), 이미지 로드, 없는 API 404 확인. Docker 이미지 빌드는 로컬에 Docker가 없어 Render 첫 빌드에서 확인.
+- 무료 플랜 특성: 15분간 요청이 없으면 잠들고 첫 접속에 수십 초 걸림. 재시작하면 요청 제한·AI 호출 횟수(메모리)가 초기화됨.

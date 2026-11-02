@@ -1,0 +1,24 @@
+# Render 블루프린트: 대시보드에서 'New > Blueprint'로 이 저장소를 연결하면 서비스가 만들어진다.
+services:
+  - type: web
+    name: salkkang-malkkang
+    runtime: docker
+    plan: free
+    region: singapore
+    branch: main
+    autoDeploy: true
+    healthCheckPath: /api/health
+    envVars:
+      - key: APP_MODE
+        value: live
+      - key: GEMINI_MODEL
+        value: gemini-3.5-flash
+      - key: GEMINI_API_KEY
+        sync: false  # 대시보드에서 직접 입력(저장소에 넣지 않음)
+      - key: GEMINI_DAILY_LIMIT
+        value: "15"
+      - key: RATE_LIMIT_PER_MIN
+        value: "12"
+      # Render 내부 프록시(사설망)만 신뢰해 실제 사용자 IP로 요청 제한. 배포 후 두 기기로 분리 여부 확인 필요
+      - key: FORWARDED_ALLOW_IPS
+        value: 10.0.0.0/8
