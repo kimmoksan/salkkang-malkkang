@@ -392,7 +392,8 @@ button:disabled { opacity: 0.6; cursor: wait; }
   display: block;
   height: auto;
   object-fit: contain;
-  animation: kkang-pop 0.35s ease-out both, kkang-bob 2.6s ease-in-out infinite;
+  transform-origin: 50% 90%;
+  animation: kkang-pop 0.35s ease-out both, var(--kk-motion, kkang-bob) var(--kk-dur, 2.6s) ease-in-out infinite;
 }
 .kkang-sm { width: 72px; }
 .kkang-md { width: 104px; }
@@ -457,7 +458,7 @@ button:disabled { opacity: 0.6; cursor: wait; }
 .guide-line { display: flex; gap: 12px; align-items: center; line-height: 1.6; margin-bottom: 16px; }
 .guide-line p { font-size: .875rem; margin: 0; }
 .guide-line strong { color: var(--accent); }
-.guide-line .kkang { width: 48px; flex: 0 0 48px; animation: none; }
+.guide-line .kkang { width: 48px; flex: 0 0 48px; }
 .story-next > .primary { flex: 0 1 auto; max-width: 100%; border-radius: 12px; }
 .conversation .hearing-loading { min-height: 180px; }
 .conversation .hearing-loading .kkang { width: 48px; animation: none; }
@@ -487,7 +488,7 @@ button:disabled { opacity: 0.6; cursor: wait; }
 .cost-label { color: var(--con); }
 .decision-summary .my-decision { position: sticky; top: 20px; padding: 24px; }
 .my-decision .card-kkang { align-items: flex-start; }
-.my-decision .kkang { width: 56px; flex: 0 0 56px; animation: none; }
+.my-decision .kkang { width: 56px; flex: 0 0 56px; }
 .my-decision .decision-choices { display: grid; grid-template-columns: 1fr; gap: 10px; margin: 24px 0; }
 .my-decision .decision-choices .chip { padding: 15px; gap: 12px; border-radius: 12px; }
 .my-decision .decision-choices input { width: auto; margin: 0; }
@@ -523,3 +524,41 @@ button:disabled { opacity: 0.6; cursor: wait; }
 @keyframes scene-layer-in { from { opacity: .6; transform: translateY(3px); } to { opacity: 1; transform: none; } }
 :root[data-still] .living-player .layer, .living-player .stage.paused .layer { animation: none; }
 @media (prefers-reduced-motion: reduce) { .living-player .layer { animation: none; } }
+
+/* 깡이 포즈별 동작: 회전·이동·크기는 개별 속성(rotate/translate/scale)이라 등장(transform)과 겹치지 않는다. */
+.kk-bob { --kk-motion: kkang-bob; --kk-dur: 2.6s; }
+.kk-wave { --kk-motion: kk-wave; --kk-dur: 2.8s; }
+.kk-hop { --kk-motion: kk-hop; --kk-dur: 2.4s; }
+.kk-tilt { --kk-motion: kk-tilt; --kk-dur: 4s; }
+.kk-scan { --kk-motion: kk-scan; --kk-dur: 3.2s; }
+.kk-nod { --kk-motion: kk-nod; --kk-dur: 2.6s; }
+.kk-raise { --kk-motion: kk-raise; --kk-dur: 2.2s; }
+.kk-shake { --kk-motion: kk-shake; --kk-dur: 2.6s; }
+.kk-squish { --kk-motion: kk-squish; --kk-dur: 3s; }
+@keyframes kk-wave { 0%, 55%, 100% { rotate: 0deg; } 10% { rotate: -7deg; } 20% { rotate: 6deg; } 30% { rotate: -5deg; } 40% { rotate: 3deg; } }
+@keyframes kk-hop { 0%, 55%, 100% { translate: 0 0; scale: 1; } 10% { scale: 1.06 .92; } 25% { translate: 0 -9%; scale: .96 1.05; } 40% { translate: 0 0; scale: 1.05 .95; } 48% { scale: 1; } }
+@keyframes kk-tilt { 0%, 100% { rotate: 0deg; } 25% { rotate: -6deg; } 50% { rotate: 0deg; } 70% { rotate: 4deg; } }
+@keyframes kk-scan { 0%, 100% { translate: 0 0; rotate: 0deg; } 30% { translate: -4% 0; rotate: -2deg; } 65% { translate: 4% 0; rotate: 2deg; } }
+@keyframes kk-nod { 0%, 45%, 100% { translate: 0 0; rotate: 0deg; } 12% { translate: 0 4%; rotate: 3deg; } 24% { translate: 0 0; rotate: 0deg; } 34% { translate: 0 3%; } }
+@keyframes kk-raise { 0%, 60%, 100% { translate: 0 0; } 14% { translate: 0 -8%; } 28% { translate: 0 0; } 38% { translate: 0 -4%; } }
+@keyframes kk-shake { 0%, 40%, 100% { translate: 0 0; } 5%, 15%, 25% { translate: -3% 0; } 10%, 20%, 30% { translate: 3% 0; } }
+@keyframes kk-squish { 0%, 100% { scale: 1; } 30% { scale: 1.04 .94; } 60% { scale: .98 1.02; } }
+/* 장면 속 깡이: 등장 연출이 끝난 뒤 같은 포즈 동작을 이어 한다(감싸는 칸이 움직여 안쪽 연출과 겹치지 않음). */
+.stage .scene-actor { transform-origin: 50% 95%; animation: var(--kk-motion, kkang-bob) var(--kk-dur, 2.6s) ease-in-out 1.9s infinite; }
+.stage .actor-speaking { --kk-dur: 1.8s; }
+
+/* 결과: 깡이가 직접 말하는 말풍선 */
+.say-list { list-style: none; padding: 0; margin: 0; display: grid; gap: 14px; }
+.say { display: flex; gap: 10px; align-items: flex-start; }
+.say .kkang { width: 56px; flex: 0 0 56px; }
+.say-bubble { position: relative; flex: 1; min-width: 0; padding: 10px 14px; border-radius: 14px; border: 1px solid var(--line); background: #1f1f42; line-height: 1.7; overflow-wrap: anywhere; }
+.say-bubble::before { content: ''; position: absolute; left: -7px; top: 18px; width: 12px; height: 12px; rotate: 45deg; background: inherit; border-left: inherit; border-bottom: inherit; border-top: 0; border-right: 0; }
+.say-bubble p { margin: 0 0 6px; }
+.say-pro .say-bubble { border-color: color-mix(in srgb, var(--pro) 45%, var(--line)); }
+.say-con .say-bubble { border-color: color-mix(in srgb, var(--con) 45%, var(--line)); }
+.say-guide .say-bubble { border-color: color-mix(in srgb, var(--accent) 45%, var(--line)); }
+.say-who { font-size: .75rem; font-weight: 700; margin-bottom: 2px !important; }
+.say-pro .say-who { color: var(--pro); }
+.say-con .say-who { color: var(--con); }
+.say-guide .say-who { color: var(--accent); }
+@media (max-width: 480px) { .say .kkang { width: 44px; flex-basis: 44px; } }

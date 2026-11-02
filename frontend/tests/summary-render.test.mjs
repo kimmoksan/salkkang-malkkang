@@ -22,11 +22,13 @@ test('결과 화면은 수정 이유·건너뛴 질문·예시 표시를 실제 
   assert.ok(!html.includes('checked=""'))
 })
 
-test('구매·보류·비구매 모두 같은 진행자 표정을 쓰며 한 선택만 표시한다', () => {
+test('구매·보류·비구매 어느 쪽을 골라도 깡이 표정은 그대로이고 한 선택만 표시한다', () => {
+  const faces = (html) => html.match(/ui_[a-z_]+\.png/g)
+  const base = faces(render())
+  assert.ok(base.includes('ui_con_relieved.png'))  // 결과에서도 말깡이가 수정한 주장을 직접 말한다
   for (const choice of ['buy', 'hold', 'decline']) {
     const html = render(choice)
     assert.equal((html.match(/checked=""/g) ?? []).length, 1)
-    assert.ok(html.includes('ui_guide_review.png'))
-    assert.ok(!html.includes('ui_pro_') && !html.includes('ui_con_'))
+    assert.deepEqual(faces(html), base)  // 선택에 따라 찬반 캐릭터가 반응하지 않음(중립)
   }
 })

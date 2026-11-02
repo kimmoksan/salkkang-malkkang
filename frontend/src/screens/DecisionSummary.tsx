@@ -3,6 +3,7 @@ import { DECISIONS, EVIDENCE_LABEL, decisionText, summarize, type SummaryClaim }
 import { SCENES } from '../scenes'
 import type { DecisionDraft, Hearing, Product } from '../types'
 import Kkang from '../components/Kkang'
+import { claimPose } from '../story'
 import { Stepper } from './ProductCheck'
 
 type Props = {
@@ -10,10 +11,15 @@ type Props = {
   onChange: (draft: DecisionDraft) => void; onReview: (index: number) => void; onRestart: () => void
 }
 
+const WHO = { pro: '살깡이', con: '말깡이' }
+
+// 결과에서도 깡이가 직접 말하는 말풍선으로: 주장 상태(유지·수정·철회)에 맞는 표정을 함께 보여 준다.
 function ClaimList({ items }: { items: SummaryClaim[] }) {
-  return items.length ? <ul className="summary-items">{items.map(({ id, sceneTitle, claim, evidence }) => (
-    <li key={id}>
-      <p className="muted small">{sceneTitle}{claim.status === 'revised' ? ' · 수정된 주장' : ''}</p>
+  return items.length ? <ul className="say-list">{items.map(({ id, sceneTitle, claim, evidence }) => (
+    <li key={id} className={`say say-${claim.side}`}>
+      <Kkang pose={claim.side === 'pro' && claim.status === 'kept' ? 'pro_present' : claimPose(claim, evidence)} size="sm" />
+      <div className="say-bubble">
+      <p className="say-who">{WHO[claim.side]} <span className="muted small">· {sceneTitle}{claim.status === 'revised' ? ' · 주장 수정' : claim.status === 'withdrawn' ? ' · 주장 철회' : ''}</span></p>
       <p>{claim.text}</p>
       {claim.change_reason && <p className="muted small">변경 이유: {claim.change_reason}</p>}
       <details>
@@ -22,6 +28,7 @@ function ClaimList({ items }: { items: SummaryClaim[] }) {
           <span className="tag outline small">{EVIDENCE_LABEL[e.kind]}</span><p>{e.text}</p>
         </li>)}</ul>
       </details>
+      </div>
     </li>
   ))}</ul> : <p className="muted">확인한 공방에 해당 내용이 없어요.</p>
 }
@@ -58,9 +65,10 @@ export default function DecisionSummary({ product, hearings, draft, onChange, on
     <div className="summary-grid">
       <article className="card"><h2 className="summary-label benefit-label">이득 <span>이런 점은 편하겠어</span></h2><p className="muted small">살깡이(찬성)가 짚은 편익</p><ClaimList items={summary.benefits} /></article>
       <article className="card"><h2 className="summary-label cost-label">불편 <span>이건 감수할 수 있을까?</span></h2><p className="muted small">말깡이(반대)가 짚은 부담과 조건</p><ClaimList items={summary.costs} /></article>
-      <article className="card"><h2 className="summary-label">확인 필요 <span>잠깡! 더 알아볼 것</span></h2>{summary.checks.length ? <ul className="summary-items">{summary.checks.map((c) => (
-        <li key={c.id}><p className="muted small">{c.sceneTitle}</p><p>{c.text}</p>
-          {c.sceneIndex !== undefined && <button type="button" className="link small" onClick={() => onReview(c.sceneIndex!)}>이 장면 확인하기 →</button>}</li>
+      <article className="card"><h2 className="summary-label">확인 필요 <span>잠깡! 더 알아볼 것</span></h2>{summary.checks.length ? <ul className="say-list">{summary.checks.map((c) => (
+        <li key={c.id} className="say say-guide"><Kkang pose="guide_review" size="sm" /><div className="say-bubble">
+          <p className="say-who">판깡이 <span className="muted small">· {c.sceneTitle}</span></p><p>{c.text}</p>
+          {c.sceneIndex !== undefined && <button type="button" className="link small" onClick={() => onReview(c.sceneIndex!)}>이 장면 확인하기 →</button>}</div></li>
       ))}</ul> : <p className="muted">확인한 자료에서 별도로 표시된 항목이 없어요.</p>}</article>
     </div>
     {summary.withdrawn.length > 0 && <details className="card"><summary>철회한 주장 보기 (현재 이득·불편에서 제외)</summary><ClaimList items={summary.withdrawn} /></details>}

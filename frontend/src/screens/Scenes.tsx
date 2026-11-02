@@ -27,7 +27,8 @@ export default function Scenes({ product, onBack, onFinish, hearings, bases, ans
   const focus = hearing?.claims.find((c) => selected?.scene === scene.id && c.id === selected.claim) ?? hearing?.claims[0]
 
   useEffect(() => {
-    document.documentElement.toggleAttribute('data-still', paused || !active)
+    // 숨겨진 장면은 Stage가 이미 멈춘다. 여기서 !active까지 걸면 결과 화면의 깡이도 같이 얼어 버린다.
+    document.documentElement.toggleAttribute('data-still', paused && active)
     return () => document.documentElement.removeAttribute('data-still')
   }, [paused, active])
   useEffect(() => { if (active) heading.current?.focus({ preventScroll: true }) }, [index, active])

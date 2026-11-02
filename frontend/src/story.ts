@@ -28,3 +28,14 @@ export function claimPose(claim: Claim, evidence: Evidence[]): KkangPose {
   if (claim.evidence_ids.some((id) => evidence.find((e) => e.id === id)?.kind === 'unverified')) return 'con_inspect'
   return claim.replies_to ? 'con_question' : 'con_curious'
 }
+
+// 포즈마다 어울리는 짧은 반복 동작(손 흔들기·폴짝·갸웃 등). 동작 사이에 쉬는 구간을 둬서 산만하지 않게.
+const MOTION: Record<string, string> = {
+  pro_wave: 'wave', guide_wave: 'wave', guide_greet: 'wave',
+  pro_excited: 'hop', pro_jump: 'hop', con_relieved: 'hop',
+  pro_think: 'tilt', con_curious: 'tilt', guide_listen: 'tilt',
+  con_inspect: 'scan', guide_review: 'scan',
+  pro_present: 'nod', pro_tidy: 'nod', con_note: 'nod', guide_present: 'nod', guide_moderate: 'nod',
+  con_question: 'raise', con_surprised: 'shake', pro_shy: 'squish',
+}
+export const motionOf = (pose: string) => `kk-${MOTION[pose] ?? 'bob'}`
