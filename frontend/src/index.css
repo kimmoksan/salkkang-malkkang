@@ -150,18 +150,18 @@ main:has(> .intro), main:has(> .hero) {
   /* 왼쪽 문구는 처음 시안(1586px 기준) 치수를 vw로 옮긴 값 */
   .hero { padding-top: 5vw; }
   .hero-copy { position: relative; max-width: 50vw; text-shadow: 0 1px 2px rgb(18 18 42 / 0.9); -webkit-font-smoothing: antialiased; }
-  .hero .eyebrow { font-size: clamp(1rem, 1.75vw, 1.875rem); color: #b8a2f7; -webkit-text-stroke: 0.02em currentColor; margin: 0 0 0.6vw 0.3vw; }
+  .hero .eyebrow { font-size: clamp(1rem, 1.75vw, 1.875rem); color: #b8a2f7; margin: 0 0 0.6vw 0.3vw; }
   .hero h1 {
     /* 번지는 큰 그림자 대신 얇은 어두운 테두리로 그림 위에서도 또렷하게 */
-    text-shadow: 0 0 1px #12122a, 1px 1px 0 #12122a, -1px 1px 0 #12122a, 0 3px 0 rgb(18 18 42 / 0.7);
-    font-size: clamp(2.5rem, 5.4vw, 5.75rem); line-height: 1.04; letter-spacing: -0.055em;
-    -webkit-text-stroke: 0.025em currentColor; color: #fbf7ef; white-space: nowrap; margin: 0 0 2.4vw;
+    text-shadow: 0 2px 6px rgb(18 18 42 / 0.75);
+    font-size: clamp(2.25rem, 4.6vw, 4.875rem); line-height: 1.12; letter-spacing: -0.02em;
+    color: #fbf7ef; white-space: nowrap; margin: 0 0 2.4vw;
   }
-  .hero-shout { display: inline-block; font-size: 1.36em; color: #b8a2f7; margin-bottom: -0.1em; }
+  .hero-shout { display: inline-block; font-size: 1.6em; color: #b8a2f7; margin-bottom: -0.1em; }
   .hero-lead { font-size: clamp(1rem, 1.5vw, 1.625rem); line-height: 1.65; color: #ddd8ee; opacity: 1; margin: 0 0 3.4vw 0.3vw; }
   .primary.hero-cta {
     width: clamp(280px, 27vw, 460px); padding: 0; height: clamp(56px, 5.2vw, 88px);
-    font-size: clamp(1.125rem, 1.75vw, 1.875rem); -webkit-text-stroke: 0.02em currentColor;
+    font-size: clamp(1.125rem, 1.75vw, 1.875rem);
     background: linear-gradient(180deg, #cdbcfd, #a78bf0); color: #1e1838;
     box-shadow: 0 8px 28px rgb(167 139 240 / 0.35);
   }
