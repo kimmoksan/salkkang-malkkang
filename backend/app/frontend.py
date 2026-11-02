@@ -1,9 +1,14 @@
 """빌드된 웹 화면을 API와 같은 주소에서 제공한다."""
 
+import mimetypes
 from pathlib import Path
 
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
+
+# 슬림 이미지엔 이 형식 정보가 없어 application/octet-stream으로 나간다
+mimetypes.add_type("image/webp", ".webp")
+mimetypes.add_type("font/woff2", ".woff2")
 
 
 def mount_frontend(app: FastAPI, directory: Path) -> None:
