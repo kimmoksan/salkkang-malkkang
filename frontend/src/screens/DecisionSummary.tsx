@@ -88,12 +88,15 @@ export default function DecisionSummary({ product, hearings, draft, onChange, on
       <label htmlFor="decision_reason">결정 이유 <span className="muted small">(선택 · 최대 500자)</span></label>
       <textarea id="decision_reason" maxLength={500} rows={3} value={draft.reason} onChange={(e) => onChange({ ...draft, reason: e.target.value })} placeholder="내게 중요했던 이득, 감수할 불편, 더 알아볼 것을 적어 보세요." />
       <p className="muted small">탭을 닫거나 새 검토를 시작하면 사라져요. 서버에는 저장하지 않아요.</p>
-      <button type="button" className="primary" disabled={!draft.choice} onClick={copyDecision}>내 결정 요약 복사</button>
+      <div className="decision-actions">
+        <button type="button" className="primary" disabled={!draft.choice} onClick={copyDecision}>내 결정 요약 복사</button>
+        <button type="button" className="secondary" onClick={onRestart}>다른 제품으로 새 검토</button>
+      </div>
       {copy?.text === text && <p role="status">{copy.status === 'success' ? '내 결정 요약을 복사했어요.' : '자동 복사가 안 돼요. 아래 내용을 선택해서 직접 복사해 주세요.'}</p>}
       {copy?.text === text && copy.status === 'manual' && <textarea aria-label="직접 복사할 결정 요약" rows={10} readOnly value={text} onFocus={(e) => e.target.select()} />}
     </section>
     </div>
     <div className="row between nav-row"><button type="button" className="link" onClick={() => onReview(summary.total - 1)}>← 청문회로 돌아가기</button>
-      <button type="button" className="secondary" onClick={onRestart}>다른 제품으로 새 검토</button></div>
+</div>
   </section>
 }

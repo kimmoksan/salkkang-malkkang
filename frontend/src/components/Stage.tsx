@@ -66,7 +66,7 @@ export default function Stage({ scene, paused, cast }: { scene: Scene; paused: b
         <LayerView key={`${scene.id}-${i}`} layer={l} paused={paused} />
       ))}
       {scene.tone && <div className={`tone-${scene.tone}`} />}
-      {cast && <SceneCast sceneId={scene.id} state={cast} />}
+      {cast && <SceneCast key={scene.id} sceneId={scene.id} state={cast} paused={paused} />}
     </div>
   )
 }
