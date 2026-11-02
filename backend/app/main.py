@@ -56,7 +56,8 @@ def hearing(req: HearingRequest, request: Request) -> Hearing:
             except GeminiError as e:
                 # AI 실패·검증 실패는 예시 공방으로 대체하고 이유를 화면에 알린다.
                 fallback = req.model_copy(update={"answer": req.answer if req.answer in MOCK_ANSWERS else None})
-                return mock_hearing(fallback).model_copy(update={"notice": f"{e} 예시 공방으로 보여드려요."})
+                # 사용자가 고른 답은 그대로 표시해 둔다: 화면이 '반영 중'에 머물거나, 이 예시를 '답 전 공방'으로 잘못 저장하지 않게
+                return mock_hearing(fallback).model_copy(update={"notice": f"{e} 예시 공방으로 보여드려요.", "answered": req.answer})
         return mock_hearing(req)
     except HearingError as e:
         raise HTTPException(status_code=422, detail=str(e))

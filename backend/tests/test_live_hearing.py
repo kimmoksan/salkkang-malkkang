@@ -155,3 +155,11 @@ def test_health_shows_calls_left_in_live_mode(monkeypatch):
     monkeypatch.setenv("GEMINI_DAILY_LIMIT", "15")
     monkeypatch.setattr(gemini, "_usage", {"day": gemini.pacific_day(), "count": 4, "exhausted": False})
     assert client.get("/api/health").json()["ai_calls_left"] == 11
+
+
+def test_fallback_after_answer_keeps_users_answer(monkeypatch):
+    live_env(monkeypatch)
+    prev = live_hearing(HearingRequest(**REQ), lambda p: GOOD).model_dump()
+    monkeypatch.setattr(main, "generate_json", lambda *a, **k: (_ for _ in ()).throw(GeminiError("AI 사용 한도에 걸렸어요(429).")))
+    body = client.post("/api/hearing", json={**REQ, "answer": "yes", "previous": prev}).json()
+    assert body["mode"] == "mock" and body["answered"] == "yes" and "429" in body["notice"]
