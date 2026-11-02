@@ -28,6 +28,17 @@ def test_static_build_preserves_api_and_rejects_missing_files(tmp_path):
     assert client.get("/.env").status_code == 404
 
 
+def test_static_build_sends_webp_and_woff2_types(tmp_path):
+    (tmp_path / "index.html").write_text("ok", encoding="utf-8")
+    (tmp_path / "hero.webp").write_bytes(b"RIFF")
+    (tmp_path / "font.woff2").write_bytes(b"wOF2")
+    application = FastAPI()
+    mount_frontend(application, tmp_path)
+    client = TestClient(application)
+    assert client.get("/hero.webp").headers["content-type"] == "image/webp"
+    assert client.get("/font.woff2").headers["content-type"] == "font/woff2"
+
+
 def test_missing_frontend_build_fails_clearly(tmp_path):
     with pytest.raises(RuntimeError, match="npm run build"):
         mount_frontend(FastAPI(), tmp_path)
