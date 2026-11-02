@@ -1,7 +1,7 @@
 import os
 from pathlib import Path
 
-from fastapi import Depends, FastAPI, HTTPException
+from fastapi import Depends, FastAPI, HTTPException, Request
 
 from app.gemini import GeminiError, generate_json
 from app.hearing import MOCK_ANSWERS, Hearing, HearingError, HearingRequest, check_scene, live_hearing, mock_hearing
@@ -44,11 +44,12 @@ def example() -> Product:
     return build_product(EXAMPLE, is_example=True)
 
 
-@app.post("/api/hearing", dependencies=[Depends(limit)])
-def hearing(req: HearingRequest) -> Hearing:
+@app.post("/api/hearing")
+def hearing(req: HearingRequest, request: Request) -> Hearing:
     try:
         check_scene(req)
         if current_mode() == "live":
+            limit(request)  # 비용이 드는 실제 AI 호출만 제한한다. 예시 모드는 서버 안에서 끝나 제한하지 않음
             try:
                 return live_hearing(req, generate_json)
             except GeminiError as e:
