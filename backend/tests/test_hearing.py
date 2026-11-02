@@ -70,3 +70,9 @@ def _h(claims, evidence=None):
 def test_validate_rejects_bad_output(claims, evidence):
     with pytest.raises(HearingError):
         validate(_h(claims, evidence), {"src_1"})
+
+
+def test_hearing_without_reason_says_so_instead_of_inventing():
+    body = post(reason="").json()
+    reason = next(e for e in body["evidence"] if e["id"] == "e_reason")
+    assert "따로 적지 않았어요" in reason["text"]

@@ -55,7 +55,7 @@ export default function DecisionSummary({ product, hearings, draft, onChange, on
     <div className="decision-layout">
     <div className="decision-notes">
     <article className="card product-recap">
-      <h2>{product.name}</h2><p>구매 이유: {product.reason}</p>
+      <h2>{product.name}</h2><p>구매 이유: {product.reason || <span className="muted">적지 않음</span>}</p>
       <p className="muted small">확인한 공방 {summary.completed} / {summary.total} · 가정과 미확인을 제품의 확정된 사실로 해석하지 마세요.</p>
       {summary.completed < summary.total && <p className="notice" role="status">아직 확인하지 않은 장면이 있어요. 아래 ‘확인 필요’에서 돌아볼 수 있어요.</p>}
     </article>

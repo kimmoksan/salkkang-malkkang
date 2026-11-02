@@ -80,13 +80,13 @@ export default function ProductCheck({ product, busy, errors, message, onBack, o
               <label htmlFor="edit_reason" className="sr-only">구매 이유</label>
               <input id="edit_reason" maxLength={200} value={reason} onChange={(e) => setReason(e.target.value)} />
               <div className="row">
-                <button type="submit" className="primary small" disabled={busy || !reason.trim()}>저장</button>
+                <button type="submit" className="primary small" disabled={busy}>저장</button>
                 <button type="button" className="secondary small" onClick={() => { setReason(product.reason); setEditing(false) }}>취소</button>
               </div>
             </form>
           ) : (
             <p className="quote">
-              {product.reason}
+              {product.reason || <span className="muted">적지 않음 (보편적인 장단점으로 살펴봐요)</span>}
               {!product.is_example && (
                 <button type="button" className="link small" onClick={() => setEditing(true)}>수정</button>
               )}

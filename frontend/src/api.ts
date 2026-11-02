@@ -13,7 +13,7 @@ export class ApiError extends Error {
 const FIELD_MESSAGES: Record<keyof IntakeInput, string> = {
   category: '지원하는 제품군 중에서 골라 주세요.',
   product_text: '제품 정보를 입력해 주세요. (최대 5000자)',
-  reason: '구매 이유를 한 줄로 입력해 주세요. (최대 200자)',
+  reason: '구매 이유는 200자까지 쓸 수 있어요.',
   catalog_model: '목록에서 제품 모델을 선택해 주세요.',
 }
 

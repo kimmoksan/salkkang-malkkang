@@ -60,7 +60,7 @@ export function decisionText(product: Product, summary: ReturnType<typeof summar
   ].join('\n')).join('\n') : '- 확인한 공방에 해당 내용이 없어요.'
   return [
     '내 결정 정리 · 예시 공방 / 실제 AI 응답 아님',
-    `제품: ${product.name}`, `구매 이유: ${product.reason}`,
+    `제품: ${product.name}`, `구매 이유: ${product.reason || '적지 않음'}`,
     `확인한 공방: ${summary.completed} / ${summary.total}`,
     ...(summary.answers.length ? ['', '내 답변', ...summary.answers.map((a) => `- [${a.sceneTitle}] ${a.question}: ${a.answer}`)] : []),
     '', '이득 (공방의 주장)', claims(summary.benefits), '', '불편 (공방의 주장)', claims(summary.costs),
