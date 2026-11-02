@@ -419,7 +419,9 @@ def live_hearing(req: HearingRequest, generate) -> Hearing:
     if req.answer is not None:
         q = req.previous.question if req.previous else None
         if q is None or (req.answer != "skip" and req.answer not in {o.id for o in q.options}):
-            raise HearingError("없는 선택지예요.")
+            # 화면의 질문과 서버가 받은 직전 공방이 어긋난 경우(예: 앞서 예시로 대체된 공방). 막다른 오류 대신
+            # AI를 부르지 않고 예시 공방으로 대체하도록 GeminiError로 넘긴다.
+            raise GeminiError("답을 직전 공방과 맞추지 못했어요.")
     if req.answer == "skip":
         # 건너뛰기는 공방을 바꾸지 않는다: AI를 부르지 않고(한도 절약) 답하기 전 공방을 그대로 돌려준다.
         return req.previous.model_copy(update={"answered": "skip", "notice": None})
