@@ -75,8 +75,9 @@ export default function App() {
     }
   }
 
-  function submit(next: IntakeInput) {
-    run(() => submitIntake(next), () => setInput(next))
+  // 카탈로그에서 고른 제품은 확인 화면 없이 바로 장면으로 간다. 직접 입력만 확인 화면을 거친다.
+  function submit(next: IntakeInput, skipCheck = false) {
+    run(() => submitIntake(next), () => { setInput(next); if (skipCheck) setStarted(true) })
   }
 
   function restart() {
@@ -94,8 +95,7 @@ export default function App() {
           <img src="/assets/logo_wordmark.png" alt="살깡말깡" />
         </button>
         <nav>
-          <a href="#how">이용 방법</a>
-          <button type="button" className="link" onClick={() => run(fetchExample)}>예시 체험</button>
+          <button type="button" className="link" onClick={() => run(fetchExample, () => setStarted(true))}>예시 체험</button>
         </nav>
         {health && <span className="badge">{MODE_LABEL[health.mode]}</span>}
       </header>
@@ -105,7 +105,7 @@ export default function App() {
             <div hidden={finished}>
               <Scenes product={product} hearings={hearings} bases={bases} answers={answers} index={sceneIndex}
                 onIndexChange={setSceneIndex} onHearing={recordHearing} onAnswer={answerScene} active={!finished}
-                onBack={() => setStarted(false)} onFinish={() => setFinished(true)} />
+                onBack={() => (input.product_text && !input.catalog_model ? setStarted(false) : setProduct(null))} onFinish={() => setFinished(true)} />
             </div>
             {finished && <DecisionSummary product={product} hearings={hearings} draft={decision}
               onChange={setDecision} onRestart={restart}
@@ -129,8 +129,8 @@ export default function App() {
           <Intro
             input={input}
             onChange={setInput}
-            onSubmit={() => submit(input)}
-            onExample={() => run(fetchExample)}
+            onSubmit={() => submit(input, !!input.catalog_model)}
+            onExample={() => run(fetchExample, () => setStarted(true))}
             busy={busy}
             errors={errors}
             message={message}
