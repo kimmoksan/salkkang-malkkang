@@ -1,7 +1,5 @@
 import { useEffect, useState, type FormEvent } from 'react'
 import { fetchCatalog, type FieldErrors } from '../api'
-import HouseArt from '../components/HouseArt'
-import Kkang from '../components/Kkang'
 import { CATEGORIES, type CatalogProduct, type IntakeInput } from '../types'
 
 type Props = {
@@ -14,12 +12,6 @@ type Props = {
   message: string | null
 }
 
-const STEPS = [
-  ['제품 확인', '제품 정보를 확인해요'],
-  ['상황과 근거', '내 생활과 맞는지 살펴봐요'],
-  ['나의 결정', '스스로 판단할 수 있어요'],
-]
-
 export default function Intro({ input, onChange, onSubmit, onExample, busy, errors, message }: Props) {
   const [local, setLocal] = useState<FieldErrors>({})
   const [manual, setManual] = useState(!input.catalog_model && !!input.product_text)
@@ -29,7 +21,6 @@ export default function Intro({ input, onChange, onSubmit, onExample, busy, erro
   const [catalogError, setCatalogError] = useState(false)
   const [retry, setRetry] = useState(0)
   const shown = { ...errors, ...local }
-  const selectedBrand = brand || products.find((p) => p.model === input.catalog_model)?.brand || ''
   const brands = [...new Set(products.map((p) => p.brand))]
 
   useEffect(() => {
@@ -51,7 +42,7 @@ export default function Intro({ input, onChange, onSubmit, onExample, busy, erro
     const next: FieldErrors = {}
     if (manual && !input.product_text.trim()) next.product_text = '제품 링크나 제품 정보를 입력해 주세요.'
     if (!manual && (!input.catalog_model || !products.some((p) => p.model === input.catalog_model))) {
-      next.catalog_model = '브랜드와 제품 모델을 선택해 주세요.'
+      next.catalog_model = '제품 모델을 선택해 주세요.'
     }
     setLocal(next)
     if (Object.keys(next).length === 0) onSubmit()
@@ -85,12 +76,6 @@ export default function Intro({ input, onChange, onSubmit, onExample, busy, erro
       <form className="intro-form" onSubmit={handleSubmit} noValidate>
         <h2>어떤 제품이 고민이야?</h2>
         <p className="muted">제품만 고르면 살깡이와 말깡이가 공방을 시작해요</p>
-        <div className="kkang-trio" aria-hidden="true">
-          <Kkang pose="pro_wave" delay={0} />
-          <Kkang pose="guide_greet" delay={0.6} />
-          <Kkang pose="con_curious" delay={1.2} />
-        </div>
-
         <fieldset className="chips" disabled={busy}>
           <legend>1. 제품군</legend>
           {CATEGORIES.map((c) => (
@@ -117,23 +102,25 @@ export default function Intro({ input, onChange, onSubmit, onExample, busy, erro
         />
         <p id="product_text_err" className="field-error">{shown.product_text}</p>
         </> : <>
-          <label htmlFor="catalog_brand">2. 브랜드</label>
-          <select id="catalog_brand" value={selectedBrand} disabled={busy || loading}
-            onChange={(e) => { setBrand(e.target.value); change({ ...input, catalog_model: undefined }) }}>
-            <option value="">브랜드를 선택해 주세요</option>
-            {brands.map((b) => <option key={b} value={b}>{b}</option>)}
-          </select>
-          <label htmlFor="catalog_model">3. 제품 모델</label>
-          <select id="catalog_model" value={input.catalog_model ?? ''} disabled={busy || loading || !selectedBrand}
-            aria-invalid={!!shown.catalog_model} aria-describedby="catalog_model_err"
-            onChange={(e) => change({ ...input, catalog_model: e.target.value || undefined })}>
-            <option value="">제품 모델을 선택해 주세요</option>
-            {products.filter((p) => p.brand === selectedBrand).map((p) => (
-              <option key={p.model} value={p.model}>{p.name}{p.variant ? ` [${p.variant}]` : ''} · {p.model}{p.status === '단종' ? ' (단종)' : ''}</option>
-            ))}
-          </select>
+          <fieldset className="model-pick" disabled={busy || loading} aria-describedby="catalog_model_err">
+            <legend>2. 제품 모델</legend>
+            {brands.length > 1 && <div className="brand-filter" role="group" aria-label="브랜드로 좁히기">
+              {['', ...brands].map((b) => (
+                <button key={b || 'all'} type="button" className="chip" aria-pressed={brand === b} onClick={() => setBrand(b)}>{b || '전체'}</button>
+              ))}
+            </div>}
+            <div className="model-list">
+              {products.filter((p) => !brand || p.brand === brand).map((p) => (
+                <label key={p.model} className="model-card">
+                  <input type="radio" name="catalog_model" value={p.model} checked={input.catalog_model === p.model}
+                    onChange={() => change({ ...input, catalog_model: p.model })} />
+                  <span className="model-name">{p.name}{p.variant ? ` [${p.variant}]` : ''}</span>
+                  <span className="muted small">{p.brand} · {p.model}{p.status === '단종' ? ' · 단종' : ''}</span>
+                </label>
+              ))}
+            </div>
+          </fieldset>
           <p id="catalog_model_err" className="field-error">{shown.catalog_model}</p>
-          {input.catalog_model && <p className="muted catalog-note">모델명: {input.catalog_model}</p>}
           {products.find((p) => p.model === input.catalog_model)?.status === '단종' && <p className="catalog-note"><span className="tag outline">단종</span> 판매·지원 여부를 별도로 확인해 주세요.</p>}
           {loading && <p className="muted catalog-note" role="status">제품 목록을 불러오는 중이에요…</p>}
           {!loading && (catalogError || products.length === 0) && <div className="catalog-note" role="status">
@@ -146,23 +133,26 @@ export default function Intro({ input, onChange, onSubmit, onExample, busy, erro
           change({ ...input, catalog_model: undefined })
         }}>{manual ? '카탈로그에서 고르기' : '목록에 없어요 · 직접 입력하기'}</button>
 
-        <label htmlFor="reason">구매 이유 <span className="muted small">(선택 · 없으면 비워 둬도 돼요)</span></label>
-        <input
-          id="reason"
-          maxLength={200}
-          placeholder="예: 퇴근 후 청소 부담을 줄이고 싶어요"
-          value={input.reason}
-          aria-invalid={!!shown.reason}
-          aria-describedby="reason_err"
-          onChange={(e) => change({ ...input, reason: e.target.value })}
-        />
-        <p id="reason_err" className="field-error">{shown.reason}</p>
+        <details className="reason-fold" open={!!input.reason}>
+          <summary>+ 구매 이유 적기 <span className="muted small">(선택)</span></summary>
+          <label htmlFor="reason" className="sr-only">구매 이유</label>
+          <input
+            id="reason"
+            maxLength={200}
+            placeholder="예: 퇴근 후 청소 부담을 줄이고 싶어요"
+            value={input.reason}
+            aria-invalid={!!shown.reason}
+            aria-describedby="reason_err"
+            onChange={(e) => change({ ...input, reason: e.target.value })}
+          />
+          <p id="reason_err" className="field-error">{shown.reason}</p>
+        </details>
 
         {message && <p className="form-error" role="alert">{message}</p>}
 
         <div className="actions">
           <button type="submit" className="primary" disabled={busy}>
-            {busy ? '확인 중…' : '사용 장면 살펴보기 →'}
+            {busy ? '확인 중…' : manual ? '제품 정보 확인하기 →' : '청문회 시작하기 →'}
           </button>
           <button type="button" className="secondary" onClick={onExample} disabled={busy}>
             예시로 먼저 체험하기
@@ -170,18 +160,6 @@ export default function Intro({ input, onChange, onSubmit, onExample, busy, erro
         </div>
       </form>
 
-      <div className="intro-art">
-        <HouseArt />
-      </div>
-
-      <ol id="how" className="steps">
-        {STEPS.map(([title, desc]) => (
-          <li key={title}>
-            <strong>{title}</strong>
-            <span className="muted">{desc}</span>
-          </li>
-        ))}
-      </ol>
     </section>
     </>
   )
