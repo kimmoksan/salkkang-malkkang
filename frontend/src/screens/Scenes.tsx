@@ -71,6 +71,6 @@ export default function Scenes({ product, onBack, onFinish, hearings, bases, ans
         </div>
       </section>
     </div>
-    <div className="row between nav-row"><button type="button" className="link" onClick={onBack}>← 제품 확인</button><button type="button" className="link small" onClick={onFinish}>지금까지 본 내용 정리하기</button></div>
+    <div className="row between nav-row"><button type="button" className="link" onClick={onBack}>← 이전으로</button><button type="button" className="link small" onClick={onFinish}>지금까지 본 내용 정리하기</button></div>
   </section>
 }
