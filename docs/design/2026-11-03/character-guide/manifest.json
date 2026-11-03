@@ -1,0 +1,43 @@
+{
+  "created_at": "2026-11-03",
+  "generator": "image_gen",
+  "artifact_type": "생성 시안 원본: 실제 애니메이션 파일 아님",
+  "files": [
+    {
+      "file": "01-approved-comparison.png",
+      "source_filename": "exec-c541115a-a564-477c-81ff-44fe4638506c.png",
+      "role": "최종 비교안의 B를 외형 기준으로 사용",
+      "width": 948,
+      "height": 1659,
+      "bytes": 1976973,
+      "sha256": "a419875be8941516e68ce2d9c2ec9023ab72180eafbfea54b5f4a74149e23e46"
+    },
+    {
+      "file": "02-pro-emotion-motion.png",
+      "source_filename": "exec-0da9757a-7d8a-44ec-8e79-845f223469e0.png",
+      "role": "살깡이 감정과 발언 모션 검토 보드",
+      "width": 1536,
+      "height": 1024,
+      "bytes": 1778027,
+      "sha256": "058c834cebac9473cd533c56ec5f93217580ffa884764ba12afe4b7d75e44833"
+    },
+    {
+      "file": "03-con-emotion-motion.png",
+      "source_filename": "exec-85436c8e-8df3-467e-b47b-8b36e3a41cfa.png",
+      "role": "말깡이 감정과 갸웃 모션 검토 보드",
+      "width": 1536,
+      "height": 1024,
+      "bytes": 1748957,
+      "sha256": "df0ec601f69800e46cc3e53b1136b0c01643433f25bf9dec87e60af0b0f99e09"
+    },
+    {
+      "file": "04-guide-emotion-motion.png",
+      "source_filename": "exec-d0c6b410-5cc4-46a7-97fb-c588b31bda99.png",
+      "role": "판깡이 감정과 안내 모션 검토 보드",
+      "width": 1536,
+      "height": 1024,
+      "bytes": 1810882,
+      "sha256": "2cb19a1f3a3b544f54495d5bfbc9febd9429fd6eb1751d75d0ce10b95950b7af"
+    }
+  ]
+}
