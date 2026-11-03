@@ -108,6 +108,18 @@
 | ap_night | bg_living (취침 톤) | ap_unit |
 | ap_filter | bg_living | ap_unit, ap_filter, ap_filter_used |
 
+## 깡이 감정 시안 교체 (v05, 2026-11-03)
+
+같은 경로·파일명(`kkang/ui_*.png`)에 사용자 시안 보드(`kkang-motion-concepts-20261103.zip`, image_gen 생성, 캐릭터별 6감정 + 3단계 모션)를 잘라 넣었다. 보드 칸마다 검은 윤곽 바깥(배경·그림자·효과선)을 지워 투명 PNG로 만들고 캐릭터 크기에 맞춰 잘랐다(약 230~280×235~245). 감정 표시는 코드가 따로 띄우므로 그림의 효과선은 뺐다. 3단계 모션 키프레임은 쓰지 않고 기존 CSS 동작을 유지한다.
+
+| 파일 | 시안 감정 |
+|---|---|
+| pro_tidy · wave/present · jump · think · excited · shy | 살깡이 기본 · 발언 · 기대 · 고민 · 아하! · 수긍 |
+| con_curious · question · inspect · note · surprised · relieved | 말깡이 기본 · 질문 · 살펴보기 · 걱정 · 아하! · 수긍 |
+| guide_greet · listen · wave · present · moderate · review | 판깡이 반가워 · 듣고 있어 · 잠깡! · 안내 · 생각 정리 · 네 선택이야 |
+
+포즈마다 자른 크기가 조금씩 달라 포즈가 바뀔 때 몸 위치가 몇 px 움직일 수 있다.
+
 ## 깡이 동작 18종 (v04, 2026-10-30)
 
 `frontend/public/assets/kkang/ui_{pro|con|guide}_{포즈}.png` — 원본 384×384를 18장 공통 범위(40,66)-(344,318)로 잘라 228×189로 축소(포즈가 바뀌어도 몸 위치가 튀지 않게). 정지 포즈를 바꿔 끼우고 CSS로 등장(pop)·들썩임(bob)을 준다. 동작 줄이기 설정이면 멈춤.
